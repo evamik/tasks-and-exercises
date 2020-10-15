@@ -46,3 +46,12 @@ public class MinimumLettersRemovedPalindrome {
         return charCounts;
     }
 }
+
+/* Output:
+For "aaba" to become a palindrome, we need to remove 1 characters 
+For "asddd" to become a palindrome, we need to remove 2 characters 
+For "daabd" to become a palindrome, we need to remove 0 characters
+For "racecar" to become a palindrome, we need to remove 0 characters
+For "aebcbda" to become a palindrome, we need to remove 2 characters
+For "testing" to become a palindrome, we need to remove 4 characters
+*/
