@@ -1,0 +1,19 @@
+#!/bin/sh
+pagalba=$'įveskite savaitės dieną [1-7] arba [pirmadienis-sekmadienis]\nnorint baigti darba įveskite Q arba q'
+echo "$pagalba"
+diena=0
+while [ ! $diena = q ]
+do
+	read diena
+	case ${diena,,} in
+		1 | pirmadienis) echo monday;;
+		2 | antradienis) echo tuesday;;
+		3 | trečiadienis | treciadienis) echo wednesday;;
+		4 | ketvirtadienis) echo thursday;;
+		5 | penktadienis) echo friday;;
+		6 | šeštadienis | sestadienis) echo saturday;;
+		7 | sekmadienis) echo sunday;;
+		q) exit 0;;
+		*) echo "$pagalba";;
+		esac
+done 

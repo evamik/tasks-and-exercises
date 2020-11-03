@@ -1,0 +1,61 @@
+IFF-8-11_MikalauskasE_L1_dat_1.json:
+-----------------------------
+| Name       | Year | Grade |
+-----------------------------
+| Antanas    |    1 |  6.96 |
+| Kazys      |    2 |  8.65 |
+| Petras     |    2 |  7.01 |
+| Sonata     |    3 |  9.13 |
+| Jonas      |    1 |  6.95 |
+| Martynas   |    3 |  9.13 |
+| Arturas    |    2 |  7.01 |
+| Vacys      |    2 |  8.65 |
+| Robertas   |    3 |  6.43 |
+| Mykolas    |    1 |  6.95 |
+| Aldona     |    3 |  9.13 |
+| Asta       |    2 |  7.01 |
+| Viktoras   |    2 |  8.66 |
+| Arturas    |    5 |  8.32 |
+| Vytas      |    3 |  7.88 |
+| Jonas      |    1 |  6.95 |
+| Zigmas     |    3 |  9.13 |
+| Arturas    |    2 |  7.01 |
+| Benas      |    1 |  8.43 |
+| Kazys      |    2 |  8.00 |
+| Tomas      |    3 |  5.10 |
+| Edgaras    |    3 | 10.00 |
+| Evaldas    |    3 | 10.00 |
+| Donatas    |    3 |  1.00 |
+| Simas      |    3 |  6.43 |
+-----------------------------
+
+results:
+-------------------------------------
+| Name       | Year | Grade | Count |
+-------------------------------------
+| Aldona     |    3 |  9.13 |    30 |
+| Antanas    |    1 |  6.96 |    29 |
+| Zigmas     |    3 |  9.13 |    29 |
+| Viktoras   |    2 |  8.66 |    28 |
+| Kazys      |    2 |  8.00 |    28 |
+| Vytas      |    3 |  7.88 |    27 |
+| Petras     |    2 |  7.01 |    27 |
+| Tomas      |    3 |  5.10 |    27 |
+| Arturas    |    5 |  8.32 |    26 |
+| Mykolas    |    1 |  6.95 |    26 |
+| Asta       |    2 |  7.01 |    25 |
+| Simas      |    3 |  6.43 |    25 |
+| Vacys      |    2 |  8.65 |    25 |
+| Arturas    |    2 |  7.01 |    24 |
+| Arturas    |    2 |  7.01 |    24 |
+| Evaldas    |    3 | 10.00 |    24 |
+| Sonata     |    3 |  9.13 |    23 |
+| Robertas   |    3 |  6.43 |    23 |
+| Kazys      |    2 |  8.65 |    22 |
+| Benas      |    1 |  8.43 |    22 |
+| Edgaras    |    3 | 10.00 |    22 |
+| Jonas      |    1 |  6.95 |    21 |
+| Martynas   |    3 |  9.13 |    21 |
+| Jonas      |    1 |  6.95 |    21 |
+| Donatas    |    3 |  1.00 |    21 |
+-------------------------------------

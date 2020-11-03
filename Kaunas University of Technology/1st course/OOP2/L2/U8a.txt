@@ -1,0 +1,9 @@
+﻿7
+Kaunas
+Šiauliai, Kaunas, 145
+Šiauliai, Naujoji Akmenė, 57
+Klaipėda, Palanga, 30
+Kaunas, Vilnius, 100
+Šiauliai, Vilnius, 230
+Vilnius, Klaipėda, 300
+Kaunas, Palanga, 250

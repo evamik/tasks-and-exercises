@@ -1,0 +1,6 @@
+BEGIN { 
+print "Sudarykite programą awk11, kuri iš failo /data/ld/ld2/stud2001,";
+print "atrinktų studentus, kurių vardai sutampa su Jūsų vardu ir atspausdintų"; 
+print "eilutės numerius kuriose jie rasti, jų pavardes bei vardus:";
+}
+{ if ($5 == "Evaldas") { print NR, $4, $5 } }

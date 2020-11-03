@@ -1,0 +1,56 @@
+IFF-8-11_MikalauskasE_L1_dat_2.json:
+-----------------------------
+| Name       | Year | Grade |
+-----------------------------
+| Antanas    |    1 |  6.95 |
+| Kazys      |    2 |  8.69 |
+| Petras     |    2 |  7.03 |
+| Sonata     |    3 |  9.16 |
+| Jonas      |    1 |  6.97 |
+| Martynas   |    3 |  9.15 |
+| Arturas    |    2 |  7.02 |
+| Vacys      |    2 |  8.68 |
+| Robertas   |    3 |  6.44 |
+| Mykolas    |    1 |  6.97 |
+| Aldona     |    3 |  9.14 |
+| Asta       |    2 |  7.01 |
+| Viktoras   |    2 |  8.65 |
+| Arturas    |    5 |  8.32 |
+| Vytas      |    3 |  7.85 |
+| Jonas      |    1 |  6.95 |
+| Zigmas     |    3 |  9.13 |
+| Arturas    |    2 |  7.01 |
+| Benas      |    1 |  8.43 |
+| Kazys      |    2 |  8.00 |
+| Tomas      |    3 |  5.00 |
+| Edgaras    |    3 | 10.00 |
+| Evaldas    |    3 | 10.00 |
+| Donatas    |    3 |  1.00 |
+| Simas      |    3 |  6.43 |
+-----------------------------
+
+results:
+-------------------------------------
+| Name       | Year | Grade | Count |
+-------------------------------------
+| Tomas      |    3 |  5.00 |    29 |
+| Zigmas     |    3 |  9.13 |    29 |
+| Martynas   |    3 |  9.15 |    28 |
+| Kazys      |    2 |  8.00 |    28 |
+| Jonas      |    1 |  6.97 |    27 |
+| Arturas    |    2 |  7.02 |    27 |
+| Arturas    |    5 |  8.32 |    26 |
+| Kazys      |    2 |  8.69 |    26 |
+| Petras     |    2 |  7.03 |    25 |
+| Asta       |    2 |  7.01 |    25 |
+| Aldona     |    3 |  9.14 |    25 |
+| Simas      |    3 |  6.43 |    25 |
+| Arturas    |    2 |  7.01 |    24 |
+| Evaldas    |    3 | 10.00 |    24 |
+| Vacys      |    2 |  8.68 |    23 |
+| Mykolas    |    1 |  6.97 |    23 |
+| Benas      |    1 |  8.43 |    22 |
+| Edgaras    |    3 | 10.00 |    22 |
+| Jonas      |    1 |  6.95 |    21 |
+| Donatas    |    3 |  1.00 |    21 |
+-------------------------------------

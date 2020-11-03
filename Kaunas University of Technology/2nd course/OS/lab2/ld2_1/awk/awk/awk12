@@ -1,0 +1,8 @@
+BEGIN { 
+print "Sudarykite programą awk12, kuri iš failo stud2001";
+print "išrinktų tas eilutes, kuriose yra IF 9/2 grupės studentai"; 
+print "ir gale atspausdintų, kiek eilučių rasta.:";
+}
+{ if ($2 == "IF") 
+	if ($3 == "9/2") { kiekis++; print $0 } }
+END { print "Rasta", kiekis, "eilučių" }

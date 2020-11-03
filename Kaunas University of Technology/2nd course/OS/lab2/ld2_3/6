@@ -1,0 +1,24 @@
+#!/bin/sh
+if [ $# = 2 ]
+then
+	if [ -d "$1" ] && [ -f "$2" ]
+	then
+		mv "$2" "$1"
+		if [ $? -gt 0 ]
+		then 
+			cp "$2" "$1"
+			if [ $? -gt 0 ]
+			then
+				echo Nepavyko nei perkelti nei nukopijuoti failo
+				exit 1
+			fi
+			exit 0
+		fi
+		exit 0
+	fi
+	if [ ! -d "$1" ]; then echo "$1" nėra direktorija; fi
+	if [ ! -f "$2" ]; then echo "$2" nėra failas; fi
+	exit 1
+fi
+echo Turi būti 2 argumentai
+exit 1

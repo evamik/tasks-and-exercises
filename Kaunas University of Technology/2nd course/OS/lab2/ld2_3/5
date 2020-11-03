@@ -1,0 +1,25 @@
+#!/bin/sh
+if [ $# = 0 ]
+then 
+	echo nėra argumentų
+	exit 1
+else 
+	echo argumentų: $#
+	echo argumentai: $*
+	if [ $# = 1 ] 
+	then
+		if [ -d "$1" ] 
+		then
+			echo direktorijos turinys:
+			ls "$1"
+		elif [ -f "$1" ] && [ -r "$1" ]
+		then
+			echo "rodyti jo turinį (T/N)?"
+			read ats
+			if [ ${ats,,} = "t" ]
+			then 
+				cat "$1"
+			fi
+		fi 
+	fi
+fi

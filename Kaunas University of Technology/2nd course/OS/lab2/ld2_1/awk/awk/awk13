@@ -1,0 +1,5 @@
+BEGIN{
+print "Sudarykite programą awk13, kuri iš failo /data/ld/ld2/awk/preke išrinktų tas eilutes,";
+print "kuriose yra informacija apie tas prekes, kurios visos yra parduotos.:"
+}
+{ if($2 == $3) print $0 }

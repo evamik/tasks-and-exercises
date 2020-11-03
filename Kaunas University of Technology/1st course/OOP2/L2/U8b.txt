@@ -1,0 +1,6 @@
+﻿Šiauliai, 100000
+Naujoji Akmenė, 10000
+Klaipėda, 150000
+Palanga, 15000
+Vilnius, 540000
+Kaunas, 300000

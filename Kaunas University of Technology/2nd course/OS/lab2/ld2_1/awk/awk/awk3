@@ -1,0 +1,4 @@
+BEGIN {print "Pirmu 10 studentu vidurkis \n"  }
+{ if ($3 == "9/1") { kiekis++; print $0; if (kiekis<11) tmp=tmp+$7;} }
+END { vid=tmp/10; print "Atsakymas",  vid;}
+

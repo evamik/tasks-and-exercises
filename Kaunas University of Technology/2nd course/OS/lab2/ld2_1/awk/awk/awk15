@@ -1,0 +1,12 @@
+BEGIN {
+	FS = ":"
+}
+{
+	if($3 == " 62. 40.103.217") { 
+		paketai += $5; 
+		baitai += $6 
+	} 
+}
+END {
+	print "paketai="paketai,  "baitai="baitai;
+}

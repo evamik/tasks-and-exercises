@@ -1,0 +1,11 @@
+duomenys         1
+ženklais         1
+simboliais       1
+žodžiais         1
+junginiais       2
+sakiniais        1
+pastraipomis     1
+lentelėmis       1
+išnašomis        1
+kitais           1
+Fragmentas "Testas, skirtas.. surasti - ilgiausią. Ąsotis, slovikas" prasidedantis eilutėje 6 ir pasibaigiantis 7

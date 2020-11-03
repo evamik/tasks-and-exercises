@@ -1,0 +1,7 @@
+login=`whoami`
+echo jūsų prisijungimo vardas: $login
+uid=`id -u $login`
+echo vartotojo numeris: $uid
+group=`id -g $login`
+echo grupė: $group
+echo $login $uid $group

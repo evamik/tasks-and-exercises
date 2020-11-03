@@ -1,0 +1,2 @@
+#!/bin/sh
+cd /def && ls; cd /var/adm && ls

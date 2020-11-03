@@ -1,0 +1,5 @@
+﻿2019-05-05
+Pavarde1, Adresas 1, 2, 1, Kodas3, 2
+Pavarde2, Adresas 2, 3, 2, Kodas4, 2
+Pavarde3, Adresas 3, 7, 3, Kodas5, 2
+Pavarde0, Adresas 0, 5, 5, Kodas1, 1

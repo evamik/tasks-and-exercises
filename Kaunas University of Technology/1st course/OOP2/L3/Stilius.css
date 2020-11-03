@@ -1,0 +1,29 @@
+﻿body {
+}
+.table {
+    padding: 3px;
+    border-collapse: collapse;
+    border: solid medium black;
+
+}
+
+    .table th {
+        border: solid medium black;
+        padding: 5px;
+        background-color: lightblue;
+    }
+
+    .table td {
+        border: solid thin black;
+        border-right: solid medium black;
+        padding: 5px;
+    }
+
+.auto-style1 {
+    width: 100%;
+
+}
+
+    .auto-style1 td {
+        vertical-align: top;
+    }

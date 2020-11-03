@@ -1,0 +1,19 @@
+Axe       60  300 0,40  true Ginklo greitis turi būti >= 0.5.
+Axe       60  300 0,90  true 
+Sword     75  800 0,80  true 
+Mace     100  980 1,20  true 
+Dagger    20  150 0,50  true 
+Spear    100  300 1,70  true 
+Bow      120  700 2,00  true 
+Sword     20  200 0,70 false  Ginklas turi būti geros būklės.
+Sword     25  250 0,80  true 
+Sword     30  300 0,90  true 
+Sword     35  350 1,00 false  Ginklas turi būti geros būklės.
+Sword     40  400 1,10  true 
+Sword     45  450 1,20  true 
+Sword     50  500 1,30 false  Ginklas turi būti geros būklės.
+Sword     55  550 1,40  true 
+Dagger    20   90 0,70  true 
+Dagger    20  150 0,90  true 
+Dagger    10  150 0,50 false  Ginklas turi būti geros būklės.
+Dagger    -1  150 0,50  true Ginklo žala gali būti > 0

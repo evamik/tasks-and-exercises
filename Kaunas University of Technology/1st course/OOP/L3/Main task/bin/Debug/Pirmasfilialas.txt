@@ -1,0 +1,15 @@
+Pirmieji rumai
+Studentu gatve 38
+863616964
+Pavadinimas1;Drama;Alma litera;1999;410;200;123456789;Vincas Kudirka
+Pavadinimas2;Mokslinis;Alma litera;2005;280;250;123456788;Bincas Budirka
+Pavadinimas3;Romantinis;Alma litera;2007;500;3000;123456787;Dincas Dudirka
+Pavadinimas4;Mokslinis;Alma litera;2017;180;1200;123456786;Rincas Rudirka
+Pavadinimas5;Mokslinis;Leidiniai Tau;2017;32;500;123456785;1
+Pavadinimas6;Mokslinis;Leidiniai Tau;2017;32;8000;123456784;2
+Pavadinimas7;Mada;Leidiniai Tau;2018;28;6000;123456783;1
+Pavadinimas8;Naujienos;Leidiniai Tau;2018;30;5000;123456782;1
+Pavadinimas9;Naujienos;Lietuvos Rytas;2018;30;30000;2018-08-07;1
+Pavadinimas10;Naujienos;Lietuvos Rytas;2018;30;30000;2018-08-09;2
+Pavadinimas11;Naujienos;Lietuvos Rytas;2018;30;30000;2018-08-11;3
+Pavadinimas12;Naujienos;Lietuvos Rytas;2018;30;30000;2018-08-13;4

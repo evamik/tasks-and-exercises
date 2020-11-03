@@ -1,0 +1,6 @@
+{
+	dydis += $5
+}
+END {
+	print "TOTAL =", dydis
+}

@@ -1,0 +1,15 @@
+BEGIN{
+kaina = 0
+gauta = 0
+parduota = 0
+}
+{ 
+if(NR > 1) {
+	if($1 > kaina) kaina = $1;
+	if($2 > gauta) gauta = $2;
+	if($3 > parduota) parduota = $3;
+	}
+}
+END {
+print kaina, gauta, parduota
+}

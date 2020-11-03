@@ -1,0 +1,36 @@
+IFF-8-11_MikalauskasE_L1_dat_3.json:
+-----------------------------
+| Name       | Year | Grade |
+-----------------------------
+| Antanas    |    1 |  6.95 |
+| Antanas    |    1 |  6.95 |
+| Antanas    |    1 |  6.95 |
+| Antanas    |    1 |  6.95 |
+| Antanas    |    1 |  6.95 |
+| Antanas    |    1 |  6.95 |
+| Antanas    |    1 |  6.95 |
+| Antanas    |    1 |  6.95 |
+| Antanas    |    1 |  6.95 |
+| Antanas    |    1 |  6.95 |
+| Antanas    |    1 |  6.95 |
+| Antanas    |    1 |  6.95 |
+| Antanas    |    1 |  6.95 |
+| Antanas    |    1 |  6.95 |
+| Antanas    |    1 |  6.95 |
+| Antanas    |    1 |  6.95 |
+| Antanas    |    1 |  6.95 |
+| Antanas    |    1 |  6.95 |
+| Antanas    |    1 |  6.95 |
+| Antanas    |    1 |  6.95 |
+| Antanas    |    1 |  6.95 |
+| Antanas    |    1 |  6.95 |
+| Antanas    |    1 |  6.95 |
+| Antanas    |    1 |  6.95 |
+| Antanas    |    1 |  6.95 |
+-----------------------------
+
+results:
+-------------------------------------
+| Name       | Year | Grade | Count |
+-------------------------------------
+-------------------------------------

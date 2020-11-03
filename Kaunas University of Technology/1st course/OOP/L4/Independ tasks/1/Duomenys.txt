@@ -1,0 +1,39 @@
+﻿    class Program
+    {
+	// komentaras komentaras komentaras ---------------------------------
+        int[] KabuciuIndeksai;
+
+        static void Main(string[] args)
+        {
+	    /* komentaras komentaras komentaras ---------------------------------
+            komentaras komentaras komentaras ---------------------------------
+            komentaras komentaras komentaras ---------------------------------
+            komentaras komentaras komentaras --------------------------------- */
+
+            Program p = new Program();
+            string[] tekstas = File.ReadAllLines(Duomenys, Encoding.GetEncoding(1257));
+	    
+	    // komentaras komentaras komentaras ---------------------------------
+            tekstas = p.Apdoroti(tekstas);
+        }
+
+
+	// komentaras komentaras komentaras ---------------------------------
+        string[] Apdoroti(string[] tekstas)
+        {
+            /*komentaras komentaras komentaras ---------------------------------
+            komentaras komentaras komentaras ---------------------------------
+            komentaras komentaras komentaras ---------------*/
+
+            for(int i = 0; i < tekstas.Length; i++)
+            {
+	        // komentaras komentaras komentaras  ---------------------------------
+                for (int j = 0; j <= tekstas[i].Length; j++)
+                    tekstas[i] = tekstas[i].Remove(j, tekstas[i].Length - j);
+            }
+
+	    // komentaras komentaras komentaras ---------------------------------
+            return tekstas;
+        }
+    }
+}

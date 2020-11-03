@@ -1,0 +1,6 @@
+antras
+pirmas
+tekst.txt
+testas
+testas2
+trecias

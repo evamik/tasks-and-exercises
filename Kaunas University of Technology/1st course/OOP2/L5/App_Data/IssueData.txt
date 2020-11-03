@@ -1,0 +1,5 @@
+﻿Kodas1, Pavadinimas1, 12.99
+Kodas2, Pavadinimas2, 11.89
+Kodas3, Pavadinimas3, 7.99
+Kodas4, Pavadinimas4, 2.99
+Kodas5, Pavadinimas5, 5

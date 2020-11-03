@@ -1,0 +1,14 @@
+#!/bin/sh
+if [ $# = 0 ]
+then 
+	echo nėra argumentų
+	exit 1
+else 
+	echo argumentų: $#
+	echo argumentai: $*
+	if [ $# = 1 ] && [ -d "$1" ] 
+	then
+		echo direktorijos turinys:
+		ls "$1"
+	fi
+fi

@@ -1,0 +1,2 @@
+BEGIN {print "Filtruosim faila \n"; }
+{ print "eil nr="$1 ,"loginas="$6  }
