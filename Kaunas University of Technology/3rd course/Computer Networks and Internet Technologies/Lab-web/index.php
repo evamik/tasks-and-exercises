@@ -11,22 +11,22 @@ $conn = new mysqli($server, $user, $password, $dbname);
 if ($conn->connect_error) die("Negaliu prisijungti: " . $conn->connect_error);
 
 if ($_POST != null) {
-    $vardas = $_POST['vardas'];
-    $epastas = $_POST['epastas'];
-    $kam = $_POST['kam'];
-    $z = $_POST['zinute'];
+    $vardas = htmlentities($_POST['vardas']);
+    $epastas = htmlentities($_POST['epastas']);
+    $kam = htmlentities($_POST['kam']);
+    $zinute = htmlentities($_POST['zinute']);
 
-    //$zinute = $_POST['zinute'];
-
-    $sql = "INSERT INTO $lentele (vardas, epastas, kam, data,IP,Zinute)
-          VALUES ('$vardas', '$epastas','$kam', NOW(),'$IP','$z')";
-    if (!$result = $conn->query($sql)) die("Negaliu įrašyti: " . $conn->error);
-    //echo "Įrašyta";
-    else {
-        header("Location:index.php");
-        $conn->close();
-        exit();
+    $stmt = $conn->prepare("INSERT INTO $lentele (vardas, epastas, kam, data, IP, Zinute) VALUES (?, ?, ?, NOW(), ?, ?)");
+    if (false === $stmt) {
+        die("Negaliu įrašyti, prepare() klaida: " . $conn->error);
     }
+    $stmt->bind_param("sssss", $vardas, $epastas, $kam, $IP, $zinute);
+    if (!$stmt->execute()) {
+        die("Negaliu įrašyti, execute() klaida: " . $stmt->error);
+    }
+    header("Location:index.php");
+    $conn->close();
+    exit();
 }
 
 
@@ -72,8 +72,14 @@ if ($_POST != null) {
         <?php
 
         //  nuskaityti
-        $sql =  "SELECT * FROM $lentele";
-        if (!$result = $conn->query($sql)) die("Negaliu nuskaityti: " . $conn->error);
+        $stmt = $conn->prepare("SELECT * FROM $lentele");
+        if (false === $stmt) {
+            die("Negaliu nuskaityti, prepare() klaida: " . $conn->error);
+        }
+        if (!$stmt->execute()) {
+            die("Negaliu nuskaityti, execute() klaida: " . $stmt->error);
+        }
+        $result = $stmt->get_result();
 
         // parodyti
         //echo "<table border=\"1\">";

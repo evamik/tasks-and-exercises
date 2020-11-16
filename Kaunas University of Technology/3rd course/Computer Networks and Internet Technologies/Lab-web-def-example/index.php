@@ -11,23 +11,23 @@ $conn = new mysqli($server, $user, $password, $dbname);
 if ($conn->connect_error) die("Negaliu prisijungti: " . $conn->connect_error);
 
 if ($_POST != null) {
-    $vardas = $_POST['vardas'];
-    $epastas = $_POST['epastas'];
-    $kam = $_POST['kam'];
-    $z = $_POST['zinute'];
-    $lytis = $_POST['lytis'];
+    $vardas = htmlentities($_POST['vardas']);
+    $epastas = htmlentities($_POST['epastas']);
+    $kam = htmlentities($_POST['kam']);
+    $zinute = htmlentities($_POST['zinute']);
+    $lytis = htmlentities($_POST['lytis']);
 
-    //$zinute = $_POST['zinute'];
-
-    $sql = "INSERT INTO $lentele (vardas, epastas, kam, data,IP,Zinute,lytis)
-          VALUES ('$vardas', '$epastas','$kam', NOW(),'$IP','$z', '$lytis')";
-    if (!$result = $conn->query($sql)) die("Negaliu įrašyti: " . $conn->error);
-    //echo "Įrašyta";
-    else {
-        header("Location:index.php");
-        $conn->close();
-        exit();
+    $stmt = $conn->prepare("INSERT INTO $lentele (vardas, epastas, kam, data, IP, Zinute, lytis) VALUES (?, ?, ?, NOW(), ?, ?, ?)");
+    if (false === $stmt) {
+        die("Negaliu įrašyti, prepare() klaida: " . $conn->error);
     }
+    $stmt->bind_param("ssssss", $vardas, $epastas, $kam, $IP, $zinute, $lytis);
+    if (!$stmt->execute()) {
+        die("Negaliu įrašyti, execute() klaida: " . $stmt->error);
+    }
+    header("Location:index.php");
+    $conn->close();
+    exit();
 }
 
 
@@ -88,13 +88,26 @@ if ($_POST != null) {
         <?php
 
         //  nuskaityti
-        if ($_GET['filtras'] == "")
-            $sql =  "SELECT * FROM $lentele";
-        else {
-            $filtras = $_GET['filtras'];
-            $sql =  "SELECT * FROM $lentele WHERE lytis='$filtras'";
+        if ($_GET['filtras'] == "") {
+            $stmt = $conn->prepare("SELECT * FROM $lentele");
+            if (false === $stmt) {
+                die("Negaliu nuskaityti, prepare() klaida: " . $conn->error);
+            }
+            if (!$stmt->execute()) {
+                die("Negaliu nuskaityti, execute() klaida: " . $stmt->error);
+            }
+        } else {
+            $filtras = htmlentities($_GET['filtras']);
+            $stmt = $conn->prepare("SELECT * FROM $lentele WHERE lytis=?");
+            if (false === $stmt) {
+                die("Negaliu nuskaityti, prepare() klaida: " . $conn->error);
+            }
+            $stmt->bind_param("s", $filtras);
+            if (!$stmt->execute()) {
+                die("Negaliu nuskaityti, execute() klaida: " . $stmt->error);
+            }
         }
-        if (!$result = $conn->query($sql)) die("Negaliu nuskaityti: " . $conn->error);
+        $result = $stmt->get_result();
 
         // parodyti
         //echo "<table border=\"1\">";
