@@ -15,11 +15,12 @@ if ($_POST != null) {
     $epastas = $_POST['epastas'];
     $kam = $_POST['kam'];
     $z = $_POST['zinute'];
+    $lytis = $_POST['lytis'];
 
     //$zinute = $_POST['zinute'];
 
-    $sql = "INSERT INTO $lentele (vardas, epastas, kam, data,IP,Zinute)
-          VALUES ('$vardas', '$epastas','$kam', NOW(),'$IP','$z')";
+    $sql = "INSERT INTO $lentele (vardas, epastas, kam, data,IP,Zinute,lytis)
+          VALUES ('$vardas', '$epastas','$kam', NOW(),'$IP','$z', '$lytis')";
     if (!$result = $conn->query($sql)) die("Negaliu įrašyti: " . $conn->error);
     //echo "Įrašyta";
     else {
@@ -67,12 +68,32 @@ if ($_POST != null) {
 
 <body>
     <h3>Žinučių sistema</h3>
+    <div class="container">
+        <form method='get'>
+            <div class="form-group col-lg-12">
+                <label for="filtras" class="control-label">Filtras:</label>
+                <select name="filtras" class="form-control input-sm">
+                    <option value="" <?php if ($_GET['filtras'] == "") echo 'selected'; ?>>Visi įrašai</option>
+                    <option value="Vyras" <?php if ($_GET['filtras'] == "Vyras") echo 'selected'; ?>>Vyras</option>
+                    <option value="Moteris" <?php if ($_GET['filtras'] == "Moteris") echo 'selected'; ?>>Moteris</option>
+                </select>
+            </div>
+            <div class="form-group col-lg-2">
+                <input type='submit' name='ok' value='filtruoti' class="btn btn-default">
+            </div>
+        </form>
+    </div>
     <table style="margin: 0px auto;" id="zinutes">
 
         <?php
 
         //  nuskaityti
-        $sql =  "SELECT * FROM $lentele";
+        if ($_GET['filtras'] == "")
+            $sql =  "SELECT * FROM $lentele";
+        else {
+            $filtras = $_GET['filtras'];
+            $sql =  "SELECT * FROM $lentele WHERE lytis='$filtras'";
+        }
         if (!$result = $conn->query($sql)) die("Negaliu nuskaityti: " . $conn->error);
 
         // parodyti
@@ -84,6 +105,7 @@ if ($_POST != null) {
                 <td>gavejas</td>
                 <td>Data(IP)</td>
                 <td>Zinute</td>
+                <td>Lytis</td>
             </tr>";
         while ($row = $result->fetch_assoc()) {
             echo "<tr>
@@ -93,6 +115,7 @@ if ($_POST != null) {
                 <td>" . $row['kam'] . "</td>
                 <td>" . $row['data'] . " (" . $row['IP'] . ")</td>
                 <td>" . $row['Zinute'] . "</td>
+                <td>" . $row['lytis'] . "</td>
             </tr>";
         }
         //echo "</table>";
@@ -118,6 +141,14 @@ if ($_POST != null) {
             <div class="form-group col-lg-12">
                 <label for="zinute" class="control-label">Žinutė:</label>
                 <textarea name='zinute' class="form-control input-sm"></textarea>
+            </div>
+            <div class="form-group col-lg-12">
+                <label for="lytis" class="control-label">Lytis:</label>
+                <select name="lytis" class="form-control input-sm">
+                    <option selected>Pasirinkite lytį</option>
+                    <option value="Vyras">Vyras</option>
+                    <option value="Moteris">Moteris</option>
+                </select>
             </div>
             <div class="form-group col-lg-2">
                 <input type='submit' name='ok' value='siųsti' class="btn btn-default">
