@@ -15,13 +15,14 @@ if ($_POST != null) {
     $epastas = htmlentities($_POST['epastas']);
     $kam = htmlentities($_POST['kam']);
     $zinute = htmlentities($_POST['zinute']);
-    $lytis = htmlentities($_POST['lytis']);
+    $statusas = htmlentities($_POST['statusas']);
+    if(!isset($_POST['statusas'])) $statusas = "NULL";
 
-    $stmt = $conn->prepare("INSERT INTO $lentele (vardas, epastas, kam, data, IP, Zinute, lytis) VALUES (?, ?, ?, NOW(), ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO $lentele (vardas, epastas, kam, data, Statusas, Zinute) VALUES (?, ?, ?, NOW(), ?, ?)");
     if (false === $stmt) {
         die("Negaliu įrašyti, prepare() klaida: " . $conn->error);
     }
-    $stmt->bind_param("ssssss", $vardas, $epastas, $kam, $IP, $zinute, $lytis);
+    $stmt->bind_param("sssss", $vardas, $epastas, $kam, $statusas, $zinute);
     if (!$stmt->execute()) {
         die("Negaliu įrašyti, execute() klaida: " . $stmt->error);
     }
@@ -48,16 +49,23 @@ if ($_POST != null) {
     }
 
     #zinutes td {
-        border: 1px solid #ddd;
+        border: 1px solid Green;
+        text-align: center;
         padding: 8px;
     }
 
-    #zinutes tr:nth-child(even) {
-        background-color: #f2f2f2;
+    #zinutes tr {
+        background-color: Azure;
+        font-family: "Times New Roman";
+        font-weight: Bold;
+    }
+    #zinutes tr:first-child {
+        background-color: Aquamarine;
     }
 
     #zinutes tr:hover {
-        background-color: #ddd;
+        background-color: Red;
+        color: White;
     }
 </style>
 
@@ -68,44 +76,17 @@ if ($_POST != null) {
 
 <body>
     <h3>Žinučių sistema</h3>
-    <div class="container">
-        <form method='get'>
-            <div class="form-group col-lg-12">
-                <label for="filtras" class="control-label">Filtras:</label>
-                <select name="filtras" class="form-control input-sm">
-                    <option value="" <?php if (isset($_GET['filtras']) && $_GET['filtras'] == "") echo 'selected'; ?>>Visi įrašai</option>
-                    <option value="Vyras" <?php if (isset($_GET['filtras']) && $_GET['filtras'] == "Vyras") echo 'selected'; ?>>Vyras</option>
-                    <option value="Moteris" <?php if (isset($_GET['filtras']) && $_GET['filtras'] == "Moteris") echo 'selected'; ?>>Moteris</option>
-                </select>
-            </div>
-            <div class="form-group col-lg-2">
-                <input type='submit' name='ok' value='filtruoti' class="btn btn-default">
-            </div>
-        </form>
-    </div>
-    <table style="margin: 0px auto;" id="zinutes">
+    <table style="margin: 0px 20px;" id="zinutes">
 
         <?php
 
         //  nuskaityti
-        if (!isset($_GET['filtras']) || $_GET['filtras'] == "") {
-            $stmt = $conn->prepare("SELECT * FROM $lentele");
-            if (false === $stmt) {
-                die("Negaliu nuskaityti, prepare() klaida: " . $conn->error);
-            }
-            if (!$stmt->execute()) {
-                die("Negaliu nuskaityti, execute() klaida: " . $stmt->error);
-            }
-        } else {
-            $filtras = htmlentities($_GET['filtras']);
-            $stmt = $conn->prepare("SELECT * FROM $lentele WHERE lytis=?");
-            if (false === $stmt) {
-                die("Negaliu nuskaityti, prepare() klaida: " . $conn->error);
-            }
-            $stmt->bind_param("s", $filtras);
-            if (!$stmt->execute()) {
-                die("Negaliu nuskaityti, execute() klaida: " . $stmt->error);
-            }
+        $stmt = $conn->prepare("SELECT * FROM $lentele");
+        if (false === $stmt) {
+            die("Negaliu nuskaityti, prepare() klaida: " . $conn->error);
+        }
+        if (!$stmt->execute()) {
+            die("Negaliu nuskaityti, execute() klaida: " . $stmt->error);
         }
         $result = $stmt->get_result();
 
@@ -116,9 +97,8 @@ if ($_POST != null) {
                 <td>vardas</td>
                 <td>epastas</td>
                 <td>gavejas</td>
-                <td>Data(IP)</td>
+                <td>Data(Statusas)</td>
                 <td>Zinute</td>
-                <td>Lytis</td>
             </tr>";
         while ($row = $result->fetch_assoc()) {
             echo "<tr>
@@ -126,9 +106,8 @@ if ($_POST != null) {
                 <td>" . $row['vardas'] . "</td>
                 <td>" . $row['epastas'] . "</td>
                 <td>" . $row['kam'] . "</td>
-                <td>" . $row['data'] . " (" . $row['IP'] . ")</td>
+                <td>" . $row['data'] . " (" . $row['Statusas'] . ")</td>
                 <td>" . $row['Zinute'] . "</td>
-                <td>" . $row['lytis'] . "</td>
             </tr>";
         }
         //echo "</table>";
@@ -155,13 +134,8 @@ if ($_POST != null) {
                 <label for="zinute" class="control-label">Žinutė:</label>
                 <textarea name='zinute' class="form-control input-sm"></textarea>
             </div>
-            <div class="form-group col-lg-12">
-                <label for="lytis" class="control-label">Lytis:</label>
-                <select name="lytis" class="form-control input-sm">
-                    <option selected>Pasirinkite lytį</option>
-                    <option value="Vyras">Vyras</option>
-                    <option value="Moteris">Moteris</option>
-                </select>
+            <div class="form-group col-lg-12 radio">
+                <label><input type="radio" name='statusas' value="Svarbus" class=""></textarea>Svarbus</label>
             </div>
             <div class="form-group col-lg-2">
                 <input type='submit' name='ok' value='siųsti' class="btn btn-default">
