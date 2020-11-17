@@ -73,9 +73,9 @@ if ($_POST != null) {
             <div class="form-group col-lg-12">
                 <label for="filtras" class="control-label">Filtras:</label>
                 <select name="filtras" class="form-control input-sm">
-                    <option value="" <?php if ($_GET['filtras'] == "") echo 'selected'; ?>>Visi įrašai</option>
-                    <option value="Vyras" <?php if ($_GET['filtras'] == "Vyras") echo 'selected'; ?>>Vyras</option>
-                    <option value="Moteris" <?php if ($_GET['filtras'] == "Moteris") echo 'selected'; ?>>Moteris</option>
+                    <option value="" <?php if (isset($_GET['filtras']) && $_GET['filtras'] == "") echo 'selected'; ?>>Visi įrašai</option>
+                    <option value="Vyras" <?php if (isset($_GET['filtras']) && $_GET['filtras'] == "Vyras") echo 'selected'; ?>>Vyras</option>
+                    <option value="Moteris" <?php if (isset($_GET['filtras']) && $_GET['filtras'] == "Moteris") echo 'selected'; ?>>Moteris</option>
                 </select>
             </div>
             <div class="form-group col-lg-2">
@@ -88,7 +88,7 @@ if ($_POST != null) {
         <?php
 
         //  nuskaityti
-        if ($_GET['filtras'] == "") {
+        if (!isset($_GET['filtras']) || $_GET['filtras'] == "") {
             $stmt = $conn->prepare("SELECT * FROM $lentele");
             if (false === $stmt) {
                 die("Negaliu nuskaityti, prepare() klaida: " . $conn->error);
