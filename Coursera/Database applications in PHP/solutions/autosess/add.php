@@ -42,7 +42,7 @@ if (isset($_POST['add']) && isset($_POST['mileage']) && isset($_POST['year']) &&
 
 <body>
     <div class="container">
-        <h1>Tracking Autos for <?= htmlentities($_GET['name']) ?></h1>
+        <h1>Tracking Autos for <?= htmlentities($_SESSION['name']) ?></h1>
         <?php
         if (isset($_SESSION['failure'])) {
             echo ('<p style="color: red;">' . htmlentities($_SESSION['failure']) . "</p>\n");
