@@ -98,7 +98,7 @@ dat.te=data.frame(x=Khan$xtest , y=as.factor(Khan$ytest ))
 pred.te=predict(out, newdata=dat.te)
 table(pred.te, dat.te$y)
 
-# Exercise
+# SVM
 satellite_test <- read.csv("C:/Users/mikal/KTU/Kaunas University of Technology/3rd course/Machine learning/L3/satellite_test.csv")
 satellite_train <- read.csv("C:/Users/mikal/KTU/Kaunas University of Technology/3rd course/Machine learning/L3/satellite_train.csv")
 satellite_test$V37=as.factor(satellite_test$V37)
@@ -118,7 +118,7 @@ bestmod=tune.out$best.model
 summary(bestmod)
 
 dat=data.frame(V36=satellite_train$V36,V35=satellite_train$V35,y=satellite_train$V37)
-svmfit=svm(dat$y~.,data=dat,kernel="linear",cost=1,scale=FALSE)
+svmfit=svm(dat$y~.,data=dat,kernel="linear",cost=1,scale=TRUE)
 plot(svmfit,dat,grid=100,color.palette=terrain.colors)
 
 test_dat=data.frame(V36=satellite_test$V36,V35=satellite_test$V35,y=satellite_test$V37)
@@ -129,10 +129,10 @@ barplot(accuracy)
 mean(test_dat$y!=pred)
 
 #4
-tune.out=tune(svm, satellite_train$V37~satellite_train$V36+satellite_train$V35, data=satellite_train, kernel="radial", ranges=list(cost=c(0.1,1,10),gamma=c(0.5,1,2,3,4) ))
+tune.out=tune(svm, satellite_train$V37~satellite_train$V36+satellite_train$V35, data=satellite_train, kernel="radial", ranges=list(cost=c(0.1,1,10),gamma=c(0.01,0.1,1,2,4) ))
 summary(tune.out)
 
-svmfit=svm(dat$y~.,data=dat,kernel="radial",gamma=4, cost=10, scale=FALSE)
+svmfit=svm(dat$y~.,data=dat,kernel="radial",gamma=4, cost=10, scale=TRUE)
 plot(svmfit,dat,grid=100,color.palette=terrain.colors)
 pred=predict(svmfit, test_dat)
 table=table(predicted_labels=pred,truth=test_dat$y)
@@ -149,7 +149,7 @@ summary(bestmod)
 
 train = satellite_train[-37]
 dat=data.frame(train,y=satellite_train$V37)
-svmfit=svm(dat$y~.,data=dat,kernel="linear",cost=0.1,scale=FALSE)
+svmfit=svm(dat$y~.,data=dat,kernel="linear",cost=0.1,scale=TRUE)
 
 test_dat=data.frame(satellite_test[-37],y=satellite_test$V37)
 pred=predict(svmfit, test_dat)
@@ -159,15 +159,431 @@ barplot(accuracy)
 mean(test_dat$y!=pred)
 
 # radial
-tune.out=tune(svm, V37~., data=satellite_train, kernel="radial", ranges=list(cost=c(0.1,1,10),gamma=c(0.0001,0.001,0.01) ))
+tune.out=tune(svm, V37~., data=satellite_train, kernel="radial", ranges=list(cost=c(0.1,1,10),gamma=c(0.001,0.1,0.1,1,2) ))
 summary(tune.out)
 bestmod=tune.out$best.model
 summary(bestmod)
 
-svmfit=svm(dat$y~.,data=dat,kernel="radial",gamma=0.01, cost=10, scale=FALSE)
+svmfit=svm(dat$y~.,data=dat,kernel="radial",gamma=0.1, cost=10, scale=TRUE)
 pred=predict(svmfit, test_dat)
 table=table(predicted_labels=pred,truth=test_dat$y)
 accuracy=diag(table)/colSums((table))
 barplot(accuracy)
 mean(test_dat$y!=pred)
 
+# Neural networks
+library(h2o)
+h2o.init(nthreads = -1)
+
+dat=read.csv("C:/Users/mikal/KTU/Kaunas University of Technology/3rd course/Machine learning/L3/customer_churn.csv", stringsAsFactors=TRUE)
+head(dat)
+str(dat)
+
+plot(density(dat$tenure[dat$Churn=="Yes"]),
+     col="firebrick1",lwd=3,main="", xlab="tenure variable, i.e.
+number of months the customer is with the company")
+lines(density(dat$tenure[dat$Churn=="No"]),
+      col="dodgerblue1",lwd=3)
+grid()
+legend(40, 0.04, legend=c("Churned", "Stayed"),
+       col=c("firebrick1", "dodgerblue1"),cex=1.2,lty=1)
+
+plot(density(dat$MonthlyCharges[dat$Churn=="Yes"]),col="red",
+     lwd=3,main="",xlab="MonthlyCharges variable",ylim=c(0,0.02))
+lines(density(dat$MonthlyCharges[dat$Churn=="No"]),col="blue",lwd=3)
+grid()
+legend(100, 0.02, legend=c("Stayed", "Churned"),col=c("red",
+                                                        "blue"),cex=0.8,lty=1)
+dat[,"customerID"]=NULL
+library(caret)
+idx.train = createDataPartition(y = dat$Churn, p = 0.8, list =
+                                  FALSE)
+train = dat[idx.train, ]
+test = dat[-idx.train, ]
+
+h2o_train=as.h2o(train)
+h2o_test=as.h2o(test)
+
+
+dl_model = h2o.deeplearning(x = names(h2o_train[,1:19]),
+                            y = "Churn",
+                            training_frame = h2o_train,
+                            activation="Tanh",
+                            hidden = c(10),
+                            loss = "CrossEntropy",
+                            score_each_iteration=TRUE,
+                            epochs = 10000,
+                            rate=0.01,
+                            balance_classes=F,
+                            adaptive_rate = F,
+                            stopping_rounds=0)
+
+plot(dl_model)
+prediction = as.data.frame(h2o.predict(object = dl_model,
+                                       newdata = h2o_test))
+confMatrix=table(true_labels=test$Churn, predicted_labels=prediction[,1])
+confMatrix
+
+diag(confMatrix)/rowSums(confMatrix)*100
+
+dl_model = h2o.deeplearning(x = names(h2o_train[,1:19]),
+                            y = "Churn",
+                            training_frame = h2o_train,
+                            activation="Tanh",
+                            hidden =  c(20,20,20),
+                            loss = "CrossEntropy",
+                            score_each_iteration=TRUE,
+                            epochs = 10000,
+                            rate=0.01,
+                            balance_classes=F,
+                            adaptive_rate = F,
+                            stopping_rounds=0)
+plot(dl_model)
+prediction = as.data.frame(h2o.predict(object = dl_model,
+                                       newdata = h2o_test))
+confMatrix=table(true_labels=test$Churn, predicted_labels=prediction[,1])
+confMatrix
+diag(confMatrix)/rowSums(confMatrix)*100
+
+dl_model = h2o.deeplearning(x = names(h2o_train[,1:19]),
+                            y = "Churn",
+                            training_frame = h2o_train,
+                            activation="Tanh",
+                            hidden =  c(20,20,20),
+                            loss = "CrossEntropy",
+                            score_each_iteration=TRUE,
+                            epochs = 10000,
+                            rate=0.01,
+                            balance_classes=F,
+                            adaptive_rate = F,
+                            stopping_rounds=0,
+                            l1=0,
+                            l2=0.01)
+
+training_loss1=dl_model@model$scoring_history$training_logloss
+plot(training_loss1,type="l",col="olivedrab",lwd=3)
+grid()
+prediction = as.data.frame(h2o.predict(object = dl_model,
+                                       newdata = h2o_test))
+mean(prediction$predict==test$Churn)*100
+confMatrix=table(predicted_labels=prediction$predict,
+                 true_labels=test$Churn)
+diag(confMatrix)/colSums(confMatrix)*100
+
+#1
+train=read.csv("C:/Users/mikal/KTU/Kaunas University of Technology/3rd course/Machine learning/L3/arrhythmia_train.csv")
+test=read.csv("C:/Users/mikal/KTU/Kaunas University of Technology/3rd course/Machine learning/L3/arrhythmia_test.csv")
+train$arrhythmia=as.factor(train$arrhythmia)
+test$arrhythmia=as.factor(test$arrhythmia)
+levels(train$arrhythmia)=c("normal","supraventricular","ventricular", "unknown")
+levels(test$arrhythmia)=c("normal","supraventricular","ventricular", "unknown")
+
+par(mfrow=c(2,5)) 
+for (i in c(1:10)){
+  y=as.vector(train[i,1:187])
+  x=as.vector(c(1:187))
+  plot(x,y, type='l')
+}
+par(mfrow=c(1,1))
+
+#2
+plot(train$X1, train$X2, xlab="X1", ylab="X2", col=train$arrhythmia, pch=16)
+
+#3
+plot(train$arrhythmia)
+
+#4
+h2o_train=as.h2o(train)
+h2o_test=as.h2o(test)
+
+# aaaaaaaaaaaaaaaaaaaaaaaa activation="Tanh" aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+dl_model = h2o.deeplearning(x = names(h2o_train[,1:187]),
+                            y = "arrhythmia",
+                            training_frame = h2o_train,
+                            activation="Tanh",
+                            hidden =  c(10),
+                            loss = "CrossEntropy",
+                            score_each_iteration=TRUE,
+                            epochs = 250,
+                            rate=0.01,
+                            balance_classes=F,
+                            adaptive_rate = F,
+                            stopping_rounds=0)
+
+training_loss1=dl_model@model$scoring_history$training_logloss
+plot(training_loss1,type="l",col="olivedrab",lwd=3)
+grid()
+prediction = as.data.frame(h2o.predict(object = dl_model,
+                                       newdata = h2o_test))
+mean(prediction$predict==test$arrhythmia)*100
+confMatrix=table(predicted_labels=prediction$predict,
+                 true_labels=test$arrhythmia)
+temp=confMatrix[3,]
+confMatrix[3,]=confMatrix[4,]
+confMatrix[4,]=temp
+confMatrix
+diag(confMatrix)/colSums(confMatrix)*100
+
+# aaaaaaaaaaaaaaaaaaaaaaaa activation="Maxout" aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+dl_model = h2o.deeplearning(x = names(h2o_train[,1:187]),
+                            y = "arrhythmia",
+                            training_frame = h2o_train,
+                            activation="Maxout",
+                            hidden =  c(10),
+                            loss = "CrossEntropy",
+                            score_each_iteration=TRUE,
+                            epochs = 250,
+                            rate=0.01,
+                            balance_classes=F,
+                            adaptive_rate = F,
+                            stopping_rounds=0)
+
+training_loss1=dl_model@model$scoring_history$training_logloss
+plot(training_loss1,type="l",col="olivedrab",lwd=3)
+grid()
+prediction = as.data.frame(h2o.predict(object = dl_model,
+                                       newdata = h2o_test))
+mean(prediction$predict==test$arrhythmia)*100
+confMatrix=table(predicted_labels=prediction$predict,
+                 true_labels=test$arrhythmia)
+temp=confMatrix[3,]
+confMatrix[3,]=confMatrix[4,]
+confMatrix[4,]=temp
+confMatrix
+diag(confMatrix)/colSums(confMatrix)*100
+
+# aaaaaaaaaaaaaaaaaaaaaaaa activation="Rectifier" aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+dl_model = h2o.deeplearning(x = names(h2o_train[,1:187]),
+                            y = "arrhythmia",
+                            training_frame = h2o_train,
+                            activation="Rectifier",
+                            hidden =  c(10),
+                            loss = "CrossEntropy",
+                            score_each_iteration=TRUE,
+                            epochs = 250,
+                            rate=0.01,
+                            balance_classes=F,
+                            adaptive_rate = F,
+                            stopping_rounds=0)
+
+training_loss1=dl_model@model$scoring_history$training_logloss
+plot(training_loss1,type="l",col="olivedrab",lwd=3)
+grid()
+prediction = as.data.frame(h2o.predict(object = dl_model,
+                                       newdata = h2o_test))
+mean(prediction$predict==test$arrhythmia)*100
+confMatrix=table(predicted_labels=prediction$predict,
+                 true_labels=test$arrhythmia)
+temp=confMatrix[3,]
+confMatrix[3,]=confMatrix[4,]
+confMatrix[4,]=temp
+confMatrix
+diag(confMatrix)/colSums(confMatrix)*100
+
+# aaaaaaaaaaaaaaaaaaaaaaaa hidden =  c(10,10) aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+dl_model = h2o.deeplearning(x = names(h2o_train[,1:187]),
+                            y = "arrhythmia",
+                            training_frame = h2o_train,
+                            activation="Maxout",
+                            hidden =  c(10,10),
+                            loss = "CrossEntropy",
+                            score_each_iteration=TRUE,
+                            epochs = 250,
+                            rate=0.01,
+                            balance_classes=F,
+                            adaptive_rate = F,
+                            stopping_rounds=0)
+
+training_loss1=dl_model@model$scoring_history$training_logloss
+plot(training_loss1,type="l",col="olivedrab",lwd=3)
+grid()
+prediction = as.data.frame(h2o.predict(object = dl_model,
+                                       newdata = h2o_test))
+mean(prediction$predict==test$arrhythmia)*100
+confMatrix=table(predicted_labels=prediction$predict,
+                 true_labels=test$arrhythmia)
+temp=confMatrix[3,]
+confMatrix[3,]=confMatrix[4,]
+confMatrix[4,]=temp
+confMatrix
+diag(confMatrix)/colSums(confMatrix)*100
+
+
+# aaaaaaaaaaaaaaaaaaaaaaaa hidden =  c(20,20) aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+dl_model = h2o.deeplearning(x = names(h2o_train[,1:187]),
+                            y = "arrhythmia",
+                            training_frame = h2o_train,
+                            activation="Maxout",
+                            hidden =  c(20,20),
+                            loss = "CrossEntropy",
+                            score_each_iteration=TRUE,
+                            epochs = 250,
+                            rate=0.01,
+                            balance_classes=F,
+                            adaptive_rate = F,
+                            stopping_rounds=0)
+
+training_loss1=dl_model@model$scoring_history$training_logloss
+plot(training_loss1,type="l",col="olivedrab",lwd=3)
+grid()
+prediction = as.data.frame(h2o.predict(object = dl_model,
+                                       newdata = h2o_test))
+mean(prediction$predict==test$arrhythmia)*100
+confMatrix=table(predicted_labels=prediction$predict,
+                 true_labels=test$arrhythmia)
+temp=confMatrix[3,]
+confMatrix[3,]=confMatrix[4,]
+confMatrix[4,]=temp
+confMatrix
+diag(confMatrix)/colSums(confMatrix)*100
+
+
+# aaaaaaaaaaaaaaaaaaaaaaaa l1=0,l2=0.005 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+dl_model = h2o.deeplearning(x = names(h2o_train[,1:187]),
+                            y = "arrhythmia",
+                            training_frame = h2o_train,
+                            activation="Maxout",
+                            hidden =  c(20,20),
+                            loss = "CrossEntropy",
+                            score_each_iteration=TRUE,
+                            epochs = 250,
+                            rate=0.01,
+                            balance_classes=F,
+                            adaptive_rate = F,
+                            stopping_rounds=0,
+                            l1=0,
+                            l2=0.005)
+
+training_loss1=dl_model@model$scoring_history$training_logloss
+plot(training_loss1,type="l",col="olivedrab",lwd=3)
+grid()
+prediction = as.data.frame(h2o.predict(object = dl_model,
+                                       newdata = h2o_test))
+mean(prediction$predict==test$arrhythmia)*100
+confMatrix=table(predicted_labels=prediction$predict,
+                 true_labels=test$arrhythmia)
+temp=confMatrix[3,]
+confMatrix[3,]=confMatrix[4,]
+confMatrix[4,]=temp
+confMatrix
+diag(confMatrix)/colSums(confMatrix)*100
+
+# aaaaaaaaaaaaaaaaaaaaaaaa l1=0,l2=0.001 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+dl_model = h2o.deeplearning(x = names(h2o_train[,1:187]),
+                            y = "arrhythmia",
+                            training_frame = h2o_train,
+                            activation="Maxout",
+                            hidden =  c(20,20),
+                            loss = "CrossEntropy",
+                            score_each_iteration=TRUE,
+                            epochs = 250,
+                            rate=0.01,
+                            balance_classes=F,
+                            adaptive_rate = F,
+                            stopping_rounds=0,
+                            l1=0,
+                            l2=0.001)
+
+training_loss1=dl_model@model$scoring_history$training_logloss
+plot(training_loss1,type="l",col="olivedrab",lwd=3)
+grid()
+prediction = as.data.frame(h2o.predict(object = dl_model,
+                                       newdata = h2o_test))
+mean(prediction$predict==test$arrhythmia)*100
+confMatrix=table(predicted_labels=prediction$predict,
+                 true_labels=test$arrhythmia)
+temp=confMatrix[3,]
+confMatrix[3,]=confMatrix[4,]
+confMatrix[4,]=temp
+confMatrix
+diag(confMatrix)/colSums(confMatrix)*100
+
+# aaaaaaaaaaaaaaaaaaaaaaaa l1=0,l2=0.0005 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+dl_model = h2o.deeplearning(x = names(h2o_train[,1:187]),
+                            y = "arrhythmia",
+                            training_frame = h2o_train,
+                            activation="Maxout",
+                            hidden =  c(20,20),
+                            loss = "CrossEntropy",
+                            score_each_iteration=TRUE,
+                            epochs = 250,
+                            rate=0.01,
+                            balance_classes=F,
+                            adaptive_rate = F,
+                            stopping_rounds=0,
+                            l1=0,
+                            l2=0.0005)
+
+training_loss1=dl_model@model$scoring_history$training_logloss
+plot(training_loss1,type="l",col="olivedrab",lwd=3)
+grid()
+prediction = as.data.frame(h2o.predict(object = dl_model,
+                                       newdata = h2o_test))
+mean(prediction$predict==test$arrhythmia)*100
+confMatrix=table(predicted_labels=prediction$predict,
+                 true_labels=test$arrhythmia)
+temp=confMatrix[3,]
+confMatrix[3,]=confMatrix[4,]
+confMatrix[4,]=temp
+confMatrix
+diag(confMatrix)/colSums(confMatrix)*100
+
+# aaaaaaaaaaaaaaaaaaaaaaaa epochs = 100 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+dl_model = h2o.deeplearning(x = names(h2o_train[,1:187]),
+                            y = "arrhythmia",
+                            training_frame = h2o_train,
+                            activation="Maxout",
+                            hidden =  c(20,20),
+                            loss = "CrossEntropy",
+                            score_each_iteration=TRUE,
+                            epochs = 100,
+                            rate=0.01,
+                            balance_classes=F,
+                            adaptive_rate = F,
+                            stopping_rounds=0,
+                            l1=0,
+                            l2=0.001)
+
+training_loss1=dl_model@model$scoring_history$training_logloss
+plot(training_loss1,type="l",col="olivedrab",lwd=3)
+grid()
+prediction = as.data.frame(h2o.predict(object = dl_model,
+                                       newdata = h2o_test))
+mean(prediction$predict==test$arrhythmia)*100
+confMatrix=table(predicted_labels=prediction$predict,
+                 true_labels=test$arrhythmia)
+temp=confMatrix[3,]
+confMatrix[3,]=confMatrix[4,]
+confMatrix[4,]=temp
+confMatrix
+diag(confMatrix)/colSums(confMatrix)*100
+
+# aaaaaaaaaaaaaaaaaaaaaaaa epochs = 500 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+dl_model = h2o.deeplearning(x = names(h2o_train[,1:187]),
+                            y = "arrhythmia",
+                            training_frame = h2o_train,
+                            activation="Maxout",
+                            hidden =  c(20,20),
+                            loss = "CrossEntropy",
+                            score_each_iteration=TRUE,
+                            epochs = 500,
+                            rate=0.01,
+                            balance_classes=F,
+                            adaptive_rate = F,
+                            stopping_rounds=0,
+                            l1=0,
+                            l2=0.001)
+
+training_loss1=dl_model@model$scoring_history$training_logloss
+plot(training_loss1,type="l",col="olivedrab",lwd=3)
+grid()
+prediction = as.data.frame(h2o.predict(object = dl_model,
+                                       newdata = h2o_test))
+mean(prediction$predict==test$arrhythmia)*100
+confMatrix=table(predicted_labels=prediction$predict,
+                 true_labels=test$arrhythmia)
+temp=confMatrix[3,]
+confMatrix[3,]=confMatrix[4,]
+confMatrix[4,]=temp
+confMatrix
+diag(confMatrix)/colSums(confMatrix)*100
