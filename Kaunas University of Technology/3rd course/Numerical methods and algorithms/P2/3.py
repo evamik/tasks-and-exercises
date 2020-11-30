@@ -3,7 +3,7 @@ import random
 import matplotlib
 from matplotlib.patches import Rectangle
 from time import sleep
-from evamik import *
+import matplotlib.pyplot as plt
 
 
 def dist(x1, y1, x2, y2):
@@ -54,16 +54,17 @@ def gradientMethod(step, itermax, eps, bounds, fun, x, S, lam, dx, m, n=-1):
             x.append([random.uniform(bounds[0][0], bounds[0][1]), random.uniform(
                 bounds[1][0], bounds[1][1])])
     for _ in range(0, m):
-        x.append([0, 0])
+        x.append([random.uniform(bounds[0][0], bounds[0][1]), random.uniform(
+            bounds[1][0], bounds[1][1])])
 
     iteration = 0
 
     ax1 = plot()
     surfaces(ax1, bounds, fun, x, n, m, S, lam)
     plt.draw()
-    plt.pause(2)
-    steps = [step]*3
-    ffs = [0]*3
+    plt.pause(0.5)
+    steps = [step]*m
+    ffs = [0]*m
     while iteration < itermax:
         for i in range(n, n+m):
             j = i-n
@@ -125,7 +126,7 @@ x = []
 S = 6
 lam = 0.2
 dx = 0.01
-m = 3
+m = 10
 n = 5
 
 result = gradientMethod(step, itermax, eps, bounds,
