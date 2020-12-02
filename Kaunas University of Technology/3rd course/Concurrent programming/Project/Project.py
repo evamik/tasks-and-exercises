@@ -1,11 +1,10 @@
-import multiprocessing
 import numpy as np
 import random
-import matplotlib
-from time import sleep
+import matplotlib.cm as cm
+import matplotlib as matplotlib
 import matplotlib.pyplot as plt
+from time import sleep
 from multiprocessing import Pool
-from functools import partial
 import time
 
 
@@ -50,6 +49,7 @@ def gradVec(i, x, fun, S, lam, n, m, dx):
     return A
 
 
+# gradient methods iteration in respect to i'th vertice
 def gradientIteration(i):
     j = i-n
     grad = gradVec(i, x, target, S, lam, n, m, dx)
@@ -65,6 +65,7 @@ def gradientIteration(i):
     return [step, ff, xx]
 
 
+# global parameters
 x = None
 x = None
 S = None
@@ -74,6 +75,8 @@ m = None
 dx = None
 steps = None
 ffs = None
+
+# initialization of global parameters
 
 
 def init(x2, S2, lam2, n2, m2, dx2, steps2, ffs2):
@@ -95,7 +98,7 @@ def init(x2, S2, lam2, n2, m2, dx2, steps2, ffs2):
     ffs = ffs2
 
 
-def gradientMethod(step, itermax, eps, bounds, x, S, lam, dx, m, parallel, n=-1):
+def gradientMethod(step, itermax, eps, bounds, x, S, lam, dx, m, parallel, processes, n=-1):
     if n == -1:
         n = len(x)
     else:
@@ -112,15 +115,18 @@ def gradientMethod(step, itermax, eps, bounds, x, S, lam, dx, m, parallel, n=-1)
     totaltime = 0
     while iteration < itermax:
         result = []
-        init(x, S, lam, n, m, dx, steps, ffs)
         start = time.time()
         if parallel:
-            p = Pool(processes=multiprocessing.cpu_count(), initializer=init, initargs=[
+            # initializing the Pool
+            p = Pool(processes=processes, initializer=init, initargs=[
                      x, S, lam, n, m, dx, steps, ffs])
+            # mapping each index of a vertice to gradientIteration method
             result = [*p.imap(gradientIteration, range(
                 n, n+m))]
             p.close()
         else:
+            # initializing global parameters
+            init(x, S, lam, n, m, dx, steps, ffs)
             for i in range(n, n+m):
                 result.append(gradientIteration(i))
         totaltime += time.time() - start
@@ -130,29 +136,64 @@ def gradientMethod(step, itermax, eps, bounds, x, S, lam, dx, m, parallel, n=-1)
         x[n:] = result[2]
         iteration += 1
         accuracy = np.linalg.norm(steps)
-        print(iteration, np.linalg.norm(ffs), accuracy)
         if(accuracy < eps):
+            # print("Program finished optimization")
             break
-    print(f"{totaltime/iteration}s per iteration")
-    return x
+    return [x, totaltime/iteration]
 
 
 step = 1
-itermax = 10
+itermax = 3
 eps = 1e-5
 bounds = [[-10, 10], [-10, 10]]
 x = []
 S = 6
 lam = 0.2
 dx = 0.01
-m = 50
 n = 100
 
+colors = ["black", "darkorange", "tan", "darkgoldenrod", "gold", "darkkhaki",
+          "yellowgreen", "green", "turquoise", "teal", "blue", "purple"]
+mStart = 5
+mEnd = 51
+mStep = 5
+
+processCounts = [1, 2, 4, 6, 8, 10, 12]
 if __name__ == "__main__":
-    result = gradientMethod(step, itermax, eps, bounds,
-                            x, S, lam, dx, m, True, n)
+    X = []
+    Ys = []
+    Y = []
+    for i in range(mStart, mEnd, mStep):
+        X.append(i)
+        Y.append(gradientMethod(step, itermax, eps, bounds,
+                                x, S, lam, dx, i, False, 1, n)[1])
+        print(f"appending m={i} time results")
+    plt.plot(X, Y, colors[0], label="Sequential")
+    print("Plotting sequential times")
+    ci = 1
+    for j in processCounts:
+        Y = []
+        for i in range(mStart, mEnd, mStep):
+            Y.append(gradientMethod(step, itermax, eps, bounds,
+                                    x, S, lam, dx, i, True, j, n)[1])
+            print(f"appending m={i} time results")
+        plt.plot(
+            X, Y, colors[ci], label="Multiprocessing (" + str(j) + " number of processes)")
 
-    result = gradientMethod(step, itermax, eps, bounds,
-                            x, S, lam, dx, m, False, n)
+        Ys.append(Y)
+        ci += 1
+        print(f"Plotting multiprocessing j={j}")
+    plt.xlabel("m")
+    plt.ylabel("average time of iteration (s)")
+    plt.legend(loc='best')
+    plt.show()
 
-    #print("n:\n", np.matrix(result[0:n]), "\nm:\n", np.matrix(result[n:n+m]))
+    Ys = np.transpose(Ys)
+    j = 0
+    for i in range(mStart, mEnd, mStep):
+        plt.plot(processCounts, Ys[j], colors[j], label="m = " + str(i))
+        j += 1
+    plt.xlabel("Process count")
+    plt.ylabel("average time of iteration (s)")
+    plt.legend(loc='best')
+    plt.show()
