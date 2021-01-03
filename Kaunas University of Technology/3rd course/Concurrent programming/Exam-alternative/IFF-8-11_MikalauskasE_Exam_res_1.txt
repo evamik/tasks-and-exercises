@@ -1,0 +1,58 @@
+IFF-8-11_MikalauskasE_Exam_dat_1.json:
+index  name      year  grade
+-----  --------  ----  -----
+1      Antanas   1     6.96 
+2      Kazys     2     8.65 
+3      Petras    2     7.01 
+4      Sonata    3     9.13 
+5      Jonas     1     6.95 
+6      Martynas  3     9.13 
+7      Arturas   2     7.01 
+8      Vacys     2     8.65 
+9      Robertas  3     6.43 
+10     Mykolas   1     6.95 
+11     Aldona    3     9.13 
+12     Asta      2     7.01 
+13     Viktoras  2     8.66 
+14     Arturas   5     8.32 
+15     Vytas     3     7.88 
+16     Jonas     1     6.95 
+17     Zigmas    3     9.13 
+18     Arturas   2     7.01 
+19     Benas     1     8.43 
+20     Kazys     2     8    
+21     Tomas     3     5.1  
+22     Edgaras   3     10   
+23     Evaldas   3     10   
+24     Donatas   3     1    
+25     Simas     3     6.43 
+
+
+results:
+index  name      year  grade  count
+-----  --------  ----  -----  -----
+1      Aldona    3     9.13   30   
+2      Antanas   1     6.96   29   
+3      Zigmas    3     9.13   29   
+4      Viktoras  2     8.66   28   
+5      Kazys     2     8      28   
+6      Petras    2     7.01   27   
+7      Vytas     3     7.88   27   
+8      Tomas     3     5.1    27   
+9      Mykolas   1     6.95   26   
+10     Arturas   5     8.32   26   
+11     Vacys     2     8.65   25   
+12     Asta      2     7.01   25   
+13     Simas     3     6.43   25   
+14     Arturas   2     7.01   24   
+15     Arturas   2     7.01   24   
+16     Evaldas   3     10     24   
+17     Sonata    3     9.13   23   
+18     Robertas  3     6.43   23   
+19     Kazys     2     8.65   22   
+20     Benas     1     8.43   22   
+21     Edgaras   3     10     22   
+22     Jonas     1     6.95   21   
+23     Martynas  3     9.13   21   
+24     Jonas     1     6.95   21   
+25     Donatas   3     1      21   
