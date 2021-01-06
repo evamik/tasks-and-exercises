@@ -15,6 +15,7 @@ const resFiles = [
 ];
 const distributeType = {
   FROM_MAIN: "from_main",
+  FROM_MAIN_COUNT: "from_main_count",
   FROM_WORKER: "from_worker",
   FROM_RESULTS: "from_results",
 };
@@ -57,6 +58,10 @@ dataFiles.map((dataFile, index) => {
             workerIndex: (state.workerIndex + 1) % workerCount,
           };
 
+        case distributeType.FROM_MAIN_COUNT: // when receiving count of students from main
+          dispatch(result, { maxCount: msg.payload });
+          return state;
+
         case distributeType.FROM_WORKER: // when receiving filtered student from worker actor
           dispatch(result, { payload: msg.payload, count: state.count + 1 });
           return { ...state, count: state.count + 1 };
@@ -94,7 +99,8 @@ dataFiles.map((dataFile, index) => {
   // actor that stores sorted results
   const result = spawn(
     distributor,
-    (state = { results: [] }, msg, ctx) => {
+    (state = { results: [], maxCount: Infinity }, msg, ctx) => {
+      if (msg.maxCount) state.maxCount = msg.maxCount;
       if (msg.payload) {
         // if received payload (student)
         // find index where to insert
@@ -106,7 +112,7 @@ dataFiles.map((dataFile, index) => {
         // else insert to found index place
         else state.results.splice(to, 0, msg.payload);
       }
-      if (msg.count === students.length)
+      if (msg.count === state.maxCount)
         dispatch(distributor, {
           type: distributeType.FROM_RESULTS,
           payload: state.results,
@@ -149,6 +155,11 @@ dataFiles.map((dataFile, index) => {
     dataFile + "printer"
   );
 
+  // send count of students to distributor
+  dispatch(distributor, {
+    type: distributeType.FROM_MAIN_COUNT,
+    payload: students.length,
+  });
   // send students to distributor
   students.forEach((student) => {
     dispatch(distributor, {
