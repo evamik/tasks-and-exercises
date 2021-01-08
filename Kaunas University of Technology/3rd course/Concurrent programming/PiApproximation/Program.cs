@@ -9,7 +9,7 @@ namespace PiApproximation
     {
         static void Main(string[] args)
         {
-            for (int j = 1000; j <= 1e7; j *= 10)
+            for (int j = 100000; j <= 0.7e7; j *= 2)
             {
                 int inside = 0;
                 int n = j;
