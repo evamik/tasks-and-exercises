@@ -1,0 +1,50 @@
+﻿[
+  {
+    "Login": "Specialistas1",
+    "Password": "123456789",
+    "FirstName": "Specialistas",
+    "LastName": "Vienas",
+    "AvailableTimePeriods": [
+      {
+        "Start": "0001-01-01 08:00:00",
+        "End": "0001-01-01 15:00:00"
+      },
+      {
+        "Start": "0001-01-02 08:00:00",
+        "End": "0001-01-02 15:00:00"
+      }
+    ] 
+  },
+  {
+    "Login": "Specialistas2",
+    "Password": "123456789",
+    "FirstName": "Specialistas",
+    "LastName": "Du",
+    "AvailableTimePeriods": [
+      {
+        "Start": "0001-01-01 16:00:00",
+        "End": "0001-01-01 22:00:00"
+      },
+      {
+        "Start": "0001-01-02 08:00:00",
+        "End": "0001-01-02 15:00:00"
+      }
+    ]
+  },
+  {
+    "Login": "Specialistas3",
+    "Password": "123456789",
+    "FirstName": "Specialistas",
+    "LastName": "Trys",
+    "AvailableTimePeriods": [
+      {
+        "Start": "0001-01-03 08:00:00",
+        "End": "0001-01-03 10:00:00"
+      },
+      {
+        "Start": "0001-01-04 08:00:00",
+        "End": "0001-01-04 10:00:00"
+      }
+    ]
+  }
+]

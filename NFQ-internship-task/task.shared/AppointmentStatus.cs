@@ -9,6 +9,7 @@ namespace task.shared
         Waiting,
         Active,
         Ended,
-        Cancelled
+        Cancelled,
+        CancelledButTaken
     }
 }

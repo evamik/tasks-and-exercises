@@ -9,7 +9,13 @@ namespace task.api.Models
 {
     public class ApiDbContext : DbContext
     {
-        public DbSet<AppointmentSpecialist> Specialists { get; set; }
+        public ApiDbContext(DbContextOptions<ApiDbContext> options) : base(options) { }
+        public DbSet<AppointmentSpecialist> AppointmentSpecialists { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

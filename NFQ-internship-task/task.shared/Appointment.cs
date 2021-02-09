@@ -10,6 +10,7 @@ namespace task.shared
         public DateTime StartingTime { get; set; }
         public string ReservationCode { get; set; }
         public AppointmentStatus Status { get; set; }
+        public int SpecialistId { get; set; }
         public AppointmentSpecialist Specialist { get; set; }
     }
 }
