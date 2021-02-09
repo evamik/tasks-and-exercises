@@ -19,9 +19,9 @@ namespace task.api.Models
             _logger = logger;
         }
 
-        public AppointmentSpecialist GetAppointmentSpecialist(int id)
+        public AppointmentSpecialist GetAppointmentSpecialist(string id)
         {
-            return _apiDbContext.AppointmentSpecialists.FirstOrDefault(a => a.AppointmentSpecialistId == id);
+            return _apiDbContext.AppointmentSpecialists.FirstOrDefault(a => a.Id == id);
         }
 
         public IEnumerable<AppointmentSpecialist> GetAppointmentSpecialists()

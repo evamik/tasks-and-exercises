@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using task.api.Models;
@@ -20,17 +22,12 @@ namespace task.api.Controllers
             _appointmentRepository = appointmentRepository;
             _logger = logger;
         }
-
+        
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
         public ActionResult<IEnumerable<Appointment>> GetAppointments()
         {
-            return Ok(_appointmentRepository.GetAppointments());
-        }
-
-        [HttpGet("{id}")]
-        public ActionResult<Appointment> GetAppointmentById(int id)
-        {
-            return _appointmentRepository.GetAppointment(id);
+            return Ok(_appointmentRepository.GetAppointments(User.Identity.Name));
         }
 
         [HttpPost]
@@ -48,6 +45,23 @@ namespace task.api.Controllers
             }
 
             return BadRequest($"Failed to book an appointment");
+        }
+
+        [HttpPut("cancel/{reservationCode}")]
+        public IActionResult CancelAppointment(string reservationCode)
+        {
+            try
+            {
+                if(_appointmentRepository.CancelAppointment(reservationCode))
+                    return Ok();
+                return BadRequest("Appointment doesn't exist or is already cancelled");
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Failed to cancel appointment: {e}");
+            }
+
+            return BadRequest($"Failed to cancel appointment");
         }
     }
 }

@@ -32,7 +32,7 @@ namespace task.api.Models
                 .Where(a => a.AvailableTimePeriods.Count > 0)
                 .ToList();
             var soonest = DateTime.MinValue;
-            var specialistId = 0;
+            string specialistId = null;
             foreach (var spec in specialists)
             {
                 var bookTime = DateTime.MinValue;
@@ -87,7 +87,7 @@ namespace task.api.Models
                 if (soonest == DateTime.MinValue || bookTime < soonest)
                 {
                     soonest = bookTime;
-                    specialistId = spec.AppointmentSpecialistId;
+                    specialistId = spec.Id;
                 }
             }
             appointment.SpecialistId = specialistId;
@@ -103,27 +103,38 @@ namespace task.api.Models
                 app.Status = AppointmentStatus.CancelledButTaken;
             }
             _apiDbContext.SaveChanges();
+            appointment.ReservationCode = $"s{specialistId.Substring(0,5)}a{appointment.AppointmentId}";
+            _apiDbContext.SaveChanges();
         }
 
         private static DateTime NextWeek(DateTime from, DateTime date)
         {
             var today = from.Date;
             var daysToAdd = (7 - (int)today.DayOfWeek);
-            var newDate = today.AddDays(daysToAdd + date.TimeOfDay.TotalDays + (int)date.DayOfWeek);
-            return newDate;
+            return today.AddDays(daysToAdd + date.TimeOfDay.TotalDays + (int)date.DayOfWeek); ;
         }
 
         private static DateTime CurrentWeek(DateTime from, DateTime date)
         {
             var today = from.Date;
             var daysToAdd = -(int)today.DayOfWeek;
-            var newDate = today.AddDays(daysToAdd + date.TimeOfDay.TotalDays + (int)date.DayOfWeek);
-            return newDate;
+            return today.AddDays(daysToAdd + date.TimeOfDay.TotalDays + (int)date.DayOfWeek); ;
         }
 
-        public IEnumerable<Appointment> GetAppointments()
+        public IEnumerable<Appointment> GetAppointments(string specialistId)
         {
-            return _apiDbContext.Appointments;
+             return _apiDbContext.Appointments.Where(a => a.SpecialistId == specialistId);
+        }
+
+        public bool CancelAppointment(string reservationCode)
+        {
+            var appointment = _apiDbContext.Appointments.FirstOrDefault(a => a.ReservationCode.Equals(reservationCode.ToLower()));
+            if (appointment == null || appointment.Status != AppointmentStatus.Waiting)
+                return false;
+
+            appointment.Status = AppointmentStatus.Cancelled;
+            _apiDbContext.SaveChanges();
+            return true;
         }
     }
 }

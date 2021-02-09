@@ -1,9 +1,8 @@
 ﻿[
   {
-    "Login": "Specialistas1",
-    "Password": "123456789",
     "FirstName": "Specialistas",
     "LastName": "Vienas",
+    "UserName": "Specialistas1", 
     "AvailableTimePeriods": [
       {
         "Start": "0001-01-01 08:00:00",
@@ -16,10 +15,9 @@
     ] 
   },
   {
-    "Login": "Specialistas2",
-    "Password": "123456789",
     "FirstName": "Specialistas",
     "LastName": "Du",
+    "UserName": "Specialistas2",
     "AvailableTimePeriods": [
       {
         "Start": "0001-01-01 16:00:00",
@@ -32,10 +30,9 @@
     ]
   },
   {
-    "Login": "Specialistas3",
-    "Password": "123456789",
     "FirstName": "Specialistas",
     "LastName": "Trys",
+    "UserName": "Specialistas3",
     "AvailableTimePeriods": [
       {
         "Start": "0001-01-03 08:00:00",

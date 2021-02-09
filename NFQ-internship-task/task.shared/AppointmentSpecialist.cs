@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
 namespace task.shared
 {
-    public class AppointmentSpecialist
+    public class AppointmentSpecialist : IdentityUser
     {
-        public int AppointmentSpecialistId { get; set; }
-        public string Login { get; set; }
-        public string Password { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public ICollection<AvailableTimePeriod> AvailableTimePeriods { get; set; }

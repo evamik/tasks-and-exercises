@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using task.api.Models;
 
 namespace task.api.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210209160609_Key")]
+    partial class Key
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -160,7 +162,11 @@ namespace task.api.Migrations
                     b.Property<string>("ReservationCode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SpecialistId")
+                    b.Property<int>("SpecialistId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SpecialistId1")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("StartingTime")
@@ -171,7 +177,7 @@ namespace task.api.Migrations
 
                     b.HasKey("AppointmentId");
 
-                    b.HasIndex("SpecialistId");
+                    b.HasIndex("SpecialistId1");
 
                     b.ToTable("Appointments");
                 });
@@ -182,6 +188,9 @@ namespace task.api.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AppointmentSpecialistId")
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -325,7 +334,9 @@ namespace task.api.Migrations
                 {
                     b.HasOne("task.shared.AppointmentSpecialist", "Specialist")
                         .WithMany("Appointments")
-                        .HasForeignKey("SpecialistId");
+                        .HasForeignKey("SpecialistId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Specialist");
                 });

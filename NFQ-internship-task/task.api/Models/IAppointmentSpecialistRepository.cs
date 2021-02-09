@@ -9,6 +9,6 @@ namespace task.api.Models
     public interface IAppointmentSpecialistRepository
     {
         IEnumerable<AppointmentSpecialist> GetAppointmentSpecialists();
-        AppointmentSpecialist GetAppointmentSpecialist(int id);
+        AppointmentSpecialist GetAppointmentSpecialist(string id);
     }
 }

@@ -26,7 +26,6 @@ namespace task.api.Controllers
         {
             try
             {
-                _logger.LogInformation(_appointmentSpecialistRepository.GetAppointmentSpecialists().First().Login);
                 return Ok(_appointmentSpecialistRepository.GetAppointmentSpecialists());
             }
             catch (Exception e)
@@ -37,11 +36,10 @@ namespace task.api.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<AppointmentSpecialist> GetAppointmentSpecialistById(int id)
+        public ActionResult<AppointmentSpecialist> GetAppointmentSpecialistById(string id)
         {
             try
             {
-                _logger.LogInformation(_appointmentSpecialistRepository.GetAppointmentSpecialist(id).AppointmentSpecialistId.ToString());
                 return _appointmentSpecialistRepository.GetAppointmentSpecialist(id);
             }
             catch (Exception e)

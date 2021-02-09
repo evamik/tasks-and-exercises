@@ -5,7 +5,12 @@
   "Logging": {
     "LogLevel": {
       "Default": "Information",
-      "Microsoft":  "Warning" 
-    } 
+      "Microsoft": "Warning"
+    }
+  },
+  "Tokens": {
+    "Key": "84htae64sd6f54uyk4i94l8t4sgdf1",
+    "Issuer": "localhost",
+    "Audience": "users" 
   } 
 }
