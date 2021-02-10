@@ -1,0 +1,20 @@
+﻿@page "/appointment"
+
+    <h1 class="page-title">Appointments</h1>
+
+<AuthorizeView>
+    <Authorized>
+        <AppointmentsView/>
+    </Authorized>
+    <NotAuthorized>
+        @if (_bookedAppointment != null)
+        {
+            <h3>You booked an appointment at <b>@_bookedAppointment.StartingTime</b></h3>
+            <h3>Your reservation code is - <b>@_bookedAppointment.ReservationCode</b></h3>
+        }
+        else
+        {
+            <button @onclick="@(async () => await BookAppointment())">Book an appointment</button>
+        }
+    </NotAuthorized>
+</AuthorizeView>

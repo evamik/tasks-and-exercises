@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "task.api", "task.api\task.api.csproj", "{38A5CFD1-8E2F-40F6-AA42-707AAB0D677D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "task.api", "task.api\task.api.csproj", "{38A5CFD1-8E2F-40F6-AA42-707AAB0D677D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "task.app", "task.app\task.app.csproj", "{0707AAB5-98A5-46AE-A9BB-7FFA8C39F7A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "task.app", "task.app\task.app.csproj", "{0707AAB5-98A5-46AE-A9BB-7FFA8C39F7A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "task.shared", "task.shared\task.shared.csproj", "{09FFA7A6-08A2-4D7B-8409-91F4B0DD00CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "task.shared", "task.shared\task.shared.csproj", "{09FFA7A6-08A2-4D7B-8409-91F4B0DD00CB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

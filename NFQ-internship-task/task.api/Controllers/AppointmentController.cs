@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -11,6 +9,7 @@ using task.shared;
 namespace task.api.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class AppointmentController : Controller
     {
@@ -22,14 +21,14 @@ namespace task.api.Controllers
             _appointmentRepository = appointmentRepository;
             _logger = logger;
         }
-        
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
         public ActionResult<IEnumerable<Appointment>> GetAppointments()
         {
+            var test = User.Identity.Name;
             return Ok(_appointmentRepository.GetAppointments(User.Identity.Name));
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public IActionResult NewAppointment(Appointment appointment)
         {
@@ -47,7 +46,8 @@ namespace task.api.Controllers
             return BadRequest($"Failed to book an appointment");
         }
 
-        [HttpPut("cancel/{reservationCode}")]
+        [AllowAnonymous]
+        [HttpPut("{reservationCode}/cancel")]
         public IActionResult CancelAppointment(string reservationCode)
         {
             try
@@ -62,6 +62,40 @@ namespace task.api.Controllers
             }
 
             return BadRequest($"Failed to cancel appointment");
+        }
+
+        [HttpPut("{reservationCode}/start")]
+        public IActionResult StartAppointment(string reservationCode)
+        {
+            try
+            {
+                if (_appointmentRepository.StartAppointment(reservationCode))
+                    return Ok();
+                return BadRequest("Failed to start an appointment");
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Failed to start an appointment: {e}");
+            }
+
+            return BadRequest($"Failed to start an appointment");
+        }
+
+        [HttpPut("{reservationCode}/end")]
+        public IActionResult EndAppointment(string reservationCode)
+        {
+            try
+            {
+                if (_appointmentRepository.EndAppointment(reservationCode))
+                    return Ok();
+                return BadRequest("Failed to end an appointment");
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Failed to end an appointment: {e}");
+            }
+
+            return BadRequest($"Failed to end an appointment");
         }
     }
 }

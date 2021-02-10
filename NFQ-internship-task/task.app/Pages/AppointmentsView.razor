@@ -1,0 +1,38 @@
+﻿@using task.shared
+@if (Appointments == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Status</th>
+                <th>Time and Date</th>
+                <th>Code</th>
+                <th />
+                <th />
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var appointment in Appointments)
+            {
+                <tr>
+                    <td>@appointment.Status</td>
+                    <td>@appointment.StartingTime</td>
+                    <td>@appointment.ReservationCode</td>
+                    <td><button @onclick="@(async () => await StartAppointment(appointment))">Start</button></td>
+                    @if (appointment.Status == AppointmentStatus.Active)
+                    {
+                        <td><button @onclick="@(async () => await EndAppointment(appointment))">End</button></td>
+                    }
+                    @if (appointment.Status == AppointmentStatus.Waiting)
+                    {
+                        <td><button @onclick="@(async () => await CancelAppointment(appointment))">Cancel</button></td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -121,9 +121,10 @@ namespace task.api.Models
             return today.AddDays(daysToAdd + date.TimeOfDay.TotalDays + (int)date.DayOfWeek); ;
         }
 
-        public IEnumerable<Appointment> GetAppointments(string specialistId)
+        public IEnumerable<Appointment> GetAppointments(string username)
         {
-             return _apiDbContext.Appointments.Where(a => a.SpecialistId == specialistId);
+            var specialistId = _apiDbContext.Users.FirstOrDefault(u => u.UserName == username)?.Id;
+             return _apiDbContext.Appointments.Where(a => a.SpecialistId == specialistId && a.StartingTime.AddMinutes(30) > DateTime.Now && a.Status == AppointmentStatus.Waiting || a.Status == AppointmentStatus.Active);
         }
 
         public bool CancelAppointment(string reservationCode)
@@ -133,6 +134,32 @@ namespace task.api.Models
                 return false;
 
             appointment.Status = AppointmentStatus.Cancelled;
+            _apiDbContext.SaveChanges();
+            return true;
+        }
+
+        public bool StartAppointment(string reservationCode)
+        {
+            var appointment = _apiDbContext.Appointments.FirstOrDefault(a => a.ReservationCode.Equals(reservationCode.ToLower()));
+            if (_apiDbContext.Appointments.Count(a =>
+                a.SpecialistId == appointment.SpecialistId && a.Status == AppointmentStatus.Active) != 0)
+                return false;
+            if (appointment == null || appointment.Status != AppointmentStatus.Waiting)
+                return false;
+
+            appointment.Status = AppointmentStatus.Active;
+            _apiDbContext.SaveChanges();
+            return true;
+        }
+
+
+        public bool EndAppointment(string reservationCode)
+        {
+            var appointment = _apiDbContext.Appointments.FirstOrDefault(a => a.ReservationCode.Equals(reservationCode.ToLower()));
+            if (appointment == null || appointment.Status != AppointmentStatus.Active)
+                return false;
+
+            appointment.Status = AppointmentStatus.Ended;
             _apiDbContext.SaveChanges();
             return true;
         }

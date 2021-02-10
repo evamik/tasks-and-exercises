@@ -11,5 +11,7 @@ namespace task.api.Models
         Appointment GetAppointment(int id);
         void NewAppointment(Appointment appointment);
         bool CancelAppointment(string reservationCode);
+        bool StartAppointment(string reservationCode);
+        bool EndAppointment(string reservationCode);
     }
 }
