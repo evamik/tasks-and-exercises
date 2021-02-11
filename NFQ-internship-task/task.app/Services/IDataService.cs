@@ -16,5 +16,7 @@ namespace task.app.Services
         Task<bool> StartAppointment(string reservationCode);
         Task<bool> EndAppointment(string reservationCode);
         Task<Appointment> NewAppointment();
+        Task<IEnumerable<Appointment>> GetDisplayBoardAppointments();
+        Task<TimeSpan> CheckAppointment(string reservationCode);
     }
 }

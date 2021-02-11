@@ -103,7 +103,7 @@ namespace task.api.Models
                 app.Status = AppointmentStatus.CancelledButTaken;
             }
             _apiDbContext.SaveChanges();
-            appointment.ReservationCode = $"s{specialistId.Substring(0,5)}a{appointment.AppointmentId}";
+            appointment.ReservationCode = $"s{specialistId.Substring(0, 5)}a{appointment.AppointmentId}";
             _apiDbContext.SaveChanges();
         }
 
@@ -124,7 +124,23 @@ namespace task.api.Models
         public IEnumerable<Appointment> GetAppointments(string username)
         {
             var specialistId = _apiDbContext.Users.FirstOrDefault(u => u.UserName == username)?.Id;
-             return _apiDbContext.Appointments.Where(a => a.SpecialistId == specialistId && a.StartingTime.AddMinutes(30) > DateTime.Now && a.Status == AppointmentStatus.Waiting || a.Status == AppointmentStatus.Active);
+            return _apiDbContext.Appointments.Where(a => a.SpecialistId == specialistId && a.Status == AppointmentStatus.Waiting || a.Status == AppointmentStatus.Active)
+                .Select(a => new Appointment
+                {
+                    AppointmentId = a.AppointmentId,
+                    ReservationCode = a.ReservationCode,
+                    StartingTime = a.StartingTime,
+                    SpecialistId = a.SpecialistId,
+                    Status = a.Status
+                });
+        }
+        
+        public IEnumerable<Appointment> GetAppointments()
+        {
+            var started = _apiDbContext.Appointments.Where(a => a.Status == AppointmentStatus.Active);
+            var upcoming = _apiDbContext.Appointments.Where(a => a.Status == AppointmentStatus.Waiting)
+                .OrderByDescending(a => a.StartingTime).Reverse().Take(5);
+            return started.Concat(upcoming);
         }
 
         public bool CancelAppointment(string reservationCode)
@@ -152,7 +168,6 @@ namespace task.api.Models
             return true;
         }
 
-
         public bool EndAppointment(string reservationCode)
         {
             var appointment = _apiDbContext.Appointments.FirstOrDefault(a => a.ReservationCode.Equals(reservationCode.ToLower()));
@@ -162,6 +177,13 @@ namespace task.api.Models
             appointment.Status = AppointmentStatus.Ended;
             _apiDbContext.SaveChanges();
             return true;
+        }
+
+        public TimeSpan CheckAppointmentTimeLeft(string reservationCode)
+        {
+            var appointment = _apiDbContext.Appointments
+                .FirstOrDefault(a => a.ReservationCode == reservationCode && a.Status == AppointmentStatus.Waiting);
+            return appointment?.StartingTime.Subtract(DateTime.Now) ?? new TimeSpan(0, 0, -1);
         }
     }
 }

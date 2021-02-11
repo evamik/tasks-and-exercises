@@ -1,0 +1,27 @@
+﻿@using task.shared
+@if (Appointments == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Status</th>
+            <th>Time and Date</th>
+            <th>Code</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var appointment in Appointments)
+        {
+            <tr>
+                <td>@appointment.Status</td>
+                <td>@appointment.StartingTime</td>
+                <td>@appointment.ReservationCode</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

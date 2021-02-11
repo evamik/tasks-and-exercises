@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using task.shared;
 
 namespace task.app.Services
@@ -73,6 +74,19 @@ namespace task.app.Services
                 return null;
 
             return await JsonSerializer.DeserializeAsync<Appointment>(await res.Content.ReadAsStreamAsync(), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+        }
+
+        public async Task<IEnumerable<Appointment>> GetDisplayBoardAppointments()
+        {
+            return await JsonSerializer.DeserializeAsync<IEnumerable<Appointment>>(
+                await _httpClient.GetStreamAsync($"api/appointment/displayboard"),
+                new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+        }
+
+        public async Task<TimeSpan> CheckAppointment(string reservationCode)
+        {
+            string res = await _httpClient.GetStringAsync(($"api/appointment/{reservationCode}"));
+            return TimeSpan.Parse(res.Replace("\"", string.Empty));
         }
     }
 }

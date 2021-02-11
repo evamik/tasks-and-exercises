@@ -21,11 +21,24 @@ namespace task.api.Controllers
             _appointmentRepository = appointmentRepository;
             _logger = logger;
         }
+
+        [AllowAnonymous]
+        [HttpGet("{reservationCode}")]
+        public ActionResult<TimeSpan> CheckAppointmentTimeLeft(string reservationCode)
+        {
+            return Ok(_appointmentRepository.CheckAppointmentTimeLeft(reservationCode));
+        }
+
         [HttpGet]
         public ActionResult<IEnumerable<Appointment>> GetAppointments()
         {
-            var test = User.Identity.Name;
             return Ok(_appointmentRepository.GetAppointments(User.Identity.Name));
+        }
+
+        [HttpGet("displayboard")]
+        public ActionResult<IEnumerable<Appointment>> GetDisplayBoardAppointments()
+        {
+            return Ok(_appointmentRepository.GetAppointments());
         }
 
         [AllowAnonymous]
