@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using task.app.Services;
@@ -16,7 +17,14 @@ namespace task.app.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            Appointments = (await DataService.GetDisplayBoardAppointments()).ToList();
+            var timer = new Timer(new TimerCallback(_ =>
+            {
+                InvokeAsync(async () =>
+                {
+                    Appointments = (await DataService.GetDisplayBoardAppointments()).ToList();
+                    StateHasChanged();
+                });
+            }), null, 0, 5000);
         }
     }
 }

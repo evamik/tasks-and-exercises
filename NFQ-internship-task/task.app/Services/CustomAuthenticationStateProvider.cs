@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Security.Claims;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Authorization;
 using task.shared;
@@ -21,7 +22,9 @@ namespace task.app.Services
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            var currentSpecialist = await _httpClient.GetFromJsonAsync<AppointmentSpecialist>("api/account");
+            var currentSpecialist = await JsonSerializer.DeserializeAsync<AppointmentSpecialist>(
+                await _httpClient.GetStreamAsync("api/account"),
+                new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
             if (currentSpecialist?.UserName == null)
                 return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));

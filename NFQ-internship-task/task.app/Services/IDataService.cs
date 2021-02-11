@@ -18,5 +18,6 @@ namespace task.app.Services
         Task<Appointment> NewAppointment();
         Task<IEnumerable<Appointment>> GetDisplayBoardAppointments();
         Task<TimeSpan> CheckAppointment(string reservationCode);
+        Task<bool> IsAuthenticated();
     }
 }

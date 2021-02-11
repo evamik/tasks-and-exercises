@@ -46,9 +46,11 @@ namespace task.api.Controllers
         public async Task<ActionResult<AppointmentSpecialist>> GetUser()
         {
             AppointmentSpecialist user = new AppointmentSpecialist();
+            _logger.LogInformation("GetUser()");
             if (User.Identity.IsAuthenticated)
             {
                 user.UserName = User.FindFirstValue(ClaimTypes.Name);
+                _logger.LogInformation($"GetUser() - {user.UserName}");
             }
 
             return await Task.FromResult(user);

@@ -1,6 +1,6 @@
 ﻿{
   "ConnectionStrings": {
-    "ConnectionString": "server=(localdb)\\MSSQLLocalDB;Database=NFQTaskDb;Integrated Security=true;MultipleActiveResultSets=true"
+    "ConnectionString": "Server=tcp:evamik.database.windows.net,1433;Initial Catalog=NFQTaskDb;Persist Security Info=False;User ID=evamik3;Password=Password123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;Persist Security Info=True;"
   },
   "Logging": {
     "LogLevel": {

@@ -21,6 +21,7 @@ namespace task.app
 
             builder.Services.AddOptions();
             builder.Services.AddAuthorizationCore();
+            builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 
             builder.Services.AddTransient(sp => new HttpClient
                 {BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)});
@@ -28,7 +29,6 @@ namespace task.app
             builder.Services.AddHttpClient<IDataService, DataService>(client =>
                 client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
-            builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 
             await builder.Build().RunAsync();
         }

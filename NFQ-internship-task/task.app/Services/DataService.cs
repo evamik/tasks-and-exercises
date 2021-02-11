@@ -88,5 +88,14 @@ namespace task.app.Services
             string res = await _httpClient.GetStringAsync(($"api/appointment/{reservationCode}"));
             return TimeSpan.Parse(res.Replace("\"", string.Empty));
         }
+
+        public async Task<bool> IsAuthenticated()
+        {
+           var currentSpecialist = await JsonSerializer.DeserializeAsync<AppointmentSpecialist>(
+               await _httpClient.GetStreamAsync("api/account"),
+               new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+
+           return currentSpecialist?.UserName != null;
+        }
     }
 }
