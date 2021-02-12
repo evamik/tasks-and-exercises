@@ -4,13 +4,14 @@ To book an appointment go to https://nfq-task.azurewebsites.net/appointment and 
 
 - ### Specialist
 To view the website as a specialist, first you need to login https://nfq-task.azurewebsites.net/login
+
 Specialist1 login: `Specialistas1`
 password: `SpecialistasVienas1.`
 
 Specialist2 login: `Specialistas2`
 password: `SpecialistasDu1.`
 
-Specialist3 login: `Specialistas1`
+Specialist3 login: `Specialistas3`
 password: `SpecialistasTrys1.`
 
 After loggin in you can see appointments registered to you at https://nfq-task.azurewebsites.net/appointment. To start, end or cancel an appointment click the respective button next to the appointment in the table.
