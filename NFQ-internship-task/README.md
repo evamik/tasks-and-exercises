@@ -1,3 +1,23 @@
+# How to use
+- ### User
+To book an appointment go to https://nfq-task.azurewebsites.net/appointment and click "Book new appointment". You will be presented with a reservation code. You can use your reservation code to check how much time is left until the appointment starts at https://nfq-task.azurewebsites.net/check or cancel the appointment at https://nfq-task.azurewebsites.net/cancel.
+
+- ### Specialist
+To view the website as a specialist, first you need to login https://nfq-task.azurewebsites.net/login
+
+Specialist1 login: `Specialistas1`
+password: `SpecialistasVienas1.`
+
+Specialist2 login: `Specialistas2`
+password: `SpecialistasDu1.`
+
+Specialist3 login: `Specialistas3`
+password: `SpecialistasTrys1.`
+
+After loggin in you can see appointments registered to you at https://nfq-task.azurewebsites.net/appointment. To start, end or cancel an appointment click the respective button next to the appointment in the table.
+
+To view the display board go to https://nfq-task.azurewebsites.net/displayboard.
+
 # Display board requirements
 - ##### The service department screen should show current visits and five upcoming visits.  
 DisplayBoardView component visualizes appointments received from the backend. Backend receives authorized api call and provides all appointments with status Active along with 5 appointments with earliest time and status Waiting.
