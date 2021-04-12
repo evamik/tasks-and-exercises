@@ -48,22 +48,22 @@ const BTCForm = () => {
   const [hiddenCount, setHiddenCount] = useState(0);
 
   useEffect(() => {
-    const getRates = (setShowed) => {
-      BTCService.getRates().then((res) => {
-        setShowed &&
-          setShowedCurrencies(
-            Object.assign(
-              {},
-              ...Object.values(res.bpi).map((cur) => ({ [cur.code]: true }))
-            )
-          );
-        setCurrencies(res.bpi);
-      });
-    };
-
     getRates(true);
     setInterval(getRates, 60000);
   }, []);
+
+  const getRates = (setShowed) => {
+    BTCService.getRates().then((res) => {
+      setShowed &&
+        setShowedCurrencies(
+          Object.assign(
+            {},
+            ...Object.values(res.bpi).map((cur) => ({ [cur.code]: true }))
+          )
+        );
+      setCurrencies(res.bpi);
+    });
+  };
 
   const handleChange = (e) => {
     setBitcoins(e.target.value);
@@ -95,33 +95,29 @@ const BTCForm = () => {
         {hiddenCount > 0 && (
           <DropdownButton className="mb-3" title="Add currency">
             {Object.keys(showedCurrencies).map((code) => {
-              if (!showedCurrencies[code])
-                return (
-                  <Dropdown.Item key={code} onSelect={() => handleShow(code)}>
-                    {code}, {currencies[code].description}
-                  </Dropdown.Item>
-                );
-              else return null;
+              return !showedCurrencies[code] ? (
+                <Dropdown.Item key={code} onSelect={() => handleShow(code)}>
+                  {code}, {currencies[code].description}
+                </Dropdown.Item>
+              ) : null;
             })}
           </DropdownButton>
         )}
         {currencies &&
           Object.keys(showedCurrencies).map((code) => {
-            if (showedCurrencies[code])
-              return (
-                <CurrencyInput
-                  key={code}
-                  code={code}
-                  value={(
-                    decode(currencies[code].symbol) +
-                    (currencies[code].rate_float * bitcoins).toFixed(2)
-                  )
-                    .toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                  handleHide={handleHide}
-                />
-              );
-            else return null;
+            return showedCurrencies[code] ? (
+              <CurrencyInput
+                key={code}
+                code={code}
+                value={(
+                  decode(currencies[code].symbol) +
+                  (currencies[code].rate_float * bitcoins).toFixed(2)
+                )
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                handleHide={handleHide}
+              />
+            ) : null;
           })}
       </Col>
     </Row>
