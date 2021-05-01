@@ -142,3 +142,5 @@ if __name__ == "__main__":
     df = df.apply(lambda x: pd.factorize(x)[0] if x.dtype != "float64" else x)
 
     print(df)
+    df.to_csv(Path(__file__).resolve().parent.__str__() +
+              "\\"+"res.csv", ";", index=False)
