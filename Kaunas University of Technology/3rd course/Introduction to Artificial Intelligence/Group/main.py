@@ -157,6 +157,9 @@ def main():
     plot_som(scaled_features, 2, 1, 2)
     plot_som(scaled_features, 4, 1, 2)
     plot_som(scaled_features, 7, 1, 2)
+    plot_som(scaled_features, 2, 1, 4)
+    plot_som(scaled_features, 4, 1, 4)
+    plot_som(scaled_features, 7, 1, 4)
 
 
 if __name__ == "__main__":
