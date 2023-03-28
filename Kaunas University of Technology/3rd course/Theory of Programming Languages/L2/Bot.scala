@@ -7,41 +7,43 @@ import scala.util.control.Breaks._
 
 object ControlFunction
 {
-    def findNextStep(bot : Bot, nodes : Array[Node], fromNode : Node) : Node = {
+    def findNextStep(nodes : Array[Node], fromNode : Node) : Node = {
         var visited = ArrayBuffer[Node]()
         var unvisited = ArrayBuffer[Node](nodes: _*)
         
-        var currentNode = new Node(-1,-1)
+        var currentNode = fromNode
         
         while(unvisited.length > 0){
             currentNode = shortestNode(unvisited)
+            currentNode.neighbours = scala.util.Random.shuffle(currentNode.neighbours)
             for( i <- 0 until currentNode.neighbours.length){
                 val node = currentNode.neighbours(i)
-                if(unvisited.contains(node)){
-                    val dist = node.gCost + currentNode.shortestDistance
-                    if(node.shortestDistance > dist){
-                        node.shortestDistance = dist
-                        node.previous = Some(currentNode)
+                if(!node.wall){
+                    if(!visited.contains(node)){
+                        val dist = node.gCost + currentNode.shortestDistance
+                        if(node.shortestDistance > dist){
+                            node.shortestDistance = dist
+                            node.previous = Some(currentNode)
+                        }
                     }
                 }
             }
             unvisited -= currentNode
             visited += currentNode
         }
-        val master = nodes(bot.inputAsIntOrElse("master", -1))
-        visited -= master
+        visited -= fromNode
         currentNode = shortestNode(visited)
-        if(master.neighbours.contains(currentNode)){
-            for ( i <- master.neighbours.length until 0){
-                if(master.neighbours(i).gCost >= 1000 )
-                master.neighbours -= master.neighbours(i)
+        if(fromNode.neighbours.contains(currentNode)){
+            for ( i <- fromNode.neighbours.length until 0){
+                if(fromNode.neighbours(i).gCost >= 1000 )
+                fromNode.neighbours -= fromNode.neighbours(i)
             }
             val r = new scala.util.Random
             var iter = 0
-            var bestNode = master.neighbours(r.nextInt(master.neighbours.length))
+            var bestNode = fromNode.neighbours(r.nextInt(fromNode.neighbours.length))
             currentNode = bestNode
             while(iter < 10){
-                val randomNode = master.neighbours(r.nextInt(master.neighbours.length))
+                val randomNode = fromNode.neighbours(r.nextInt(fromNode.neighbours.length))
                 if(bestNode.shortestDistance > randomNode.shortestDistance)
                     bestNode = randomNode
                 
@@ -55,7 +57,7 @@ object ControlFunction
         while(!toBreak){
             last.previous match {
                 case Some(previous : Node) =>
-                    if(previous != master){
+                    if(previous != fromNode){
                         currentNode = previous
                     }
                     last = previous
@@ -88,6 +90,8 @@ object ControlFunction
     
     def posToIndex(x : Int, y : Int) : Int = x + y * 31
     
+    def posToIndex2(x : Int, y : Int) : Int = x + y * 21
+    
     def forMaster(bot: Bot) {
         val (directionValue, nearestEnemyMaster, nearestEnemySlave) = analyzeViewAsMaster(bot.view)
 
@@ -119,17 +123,18 @@ object ControlFunction
                     case "p" => 70 // -100 food
                     case "B" => -5000 // +200 food
                     case "b" => 100 // monster
-                    case "_" => 0 // nothing
+                    case "_" => 1 // nothing
                     case "M" => -1 // Master
                     case _ => 1000
                 }
-                if(cost == -1){
+                if(y == 15 && x == 15){
                     node.shortestDistance = 0
                     masterIndex = index
                 }
                 node.gCost += cost
-                if(cost == 1000)
+                if(cost == 1000){
                     node.wall = true
+                }
                 
                 line += entityString + " "
                 
@@ -152,13 +157,32 @@ object ControlFunction
             bot.log(line)
             line = ""
         }
-        bot.set("master" -> masterIndex)
         
-        val nextNode = findNextStep(bot, nodes, nodes(masterIndex))
+        val nextNode = findNextStep(nodes, nodes(masterIndex))
+        /*for( y <- 0 until 31){
+            var str = ""
+            for( x <- 0 until 31){
+                str += "%-7s".format(nodes(posToIndex(x, y)).gCost)
+            }
+            Console.println(str)
+            Console.println()
+        }
+        for( y <- 0 until 31){
+            var str = ""
+            for( x <- 0 until 31){
+                str += "%-7s".format(nodes(posToIndex(x, y)).shortestDistance)
+            }
+            Console.println(str)
+            Console.println()
+        }*/
         val dir = new XY(nextNode.x-15, nextNode.y-15)
         
         bot.move(dir)
         bot.set("lastDirection" -> bestDirection45)
+        
+        if((bot.time < 30 || bot.time % 20 <= 2) && bot.time < 700){
+            bot.spawn(new XY(15-nextNode.x, 15-nextNode.y), "mood" -> "Farmer", "spawnTime" -> bot.time)
+        }
 
         if(dontFireAggressiveMissileUntil < bot.time && bot.energy > 100) { // fire attack missile?
             nearestEnemyMaster match {
@@ -191,6 +215,7 @@ object ControlFunction
         bot.inputOrElse("mood", "Lurking") match {
             case "Aggressive" => reactAsAggressiveMissile(bot)
             case "Defensive" => reactAsDefensiveMissile(bot)
+            case "Farmer" => reactAsFarmer(bot)
             case s: String => bot.log("unknown mood: " + s)
         }
     }
@@ -259,6 +284,78 @@ object ControlFunction
                     bot.set("mood" -> "Lurking", "target" -> "")
                     bot.say("Lurking")
                 }
+        }
+    }
+    
+    def reactAsFarmer(bot: MiniBot){
+        if(bot.time - bot.inputAsIntOrElse("spawnTime", -1) > 1){
+            val xto = bot.offsetToMaster.toString.split(":")(0)
+            val yto = bot.offsetToMaster.toString.split(":")(1)
+            var nodes = new Array[Node](21*21)
+            var index = 0
+            var masterIndex = -1
+            
+            for( y <- 0 until 21){
+                for( x <- 0 until 21){
+                    val node = new Node(x, y)
+                    val entityString = bot.view.cells.charAt(x+y*21).toString
+                    var cost = entityString match {
+                        case "W" => 1000 //wall
+                        case "?" => 100 //can't see
+                        case "m" => 800 // enemy master
+                        case "s" => 700 // enemy slave
+                        case "P" => -5000 // +100 food
+                        case "p" => 70 // -100 food
+                        case "B" => -5000 // +200 food
+                        case "b" => 100 // monster
+                        case "_" => 1 // nothing
+                        case "S" => 200
+                        case "M" => {
+                            if(bot.energy > 350 || bot.time > 700){ 
+                                -10000
+                            }
+                            else 100
+                        }// Master
+                        case _ => 1000
+                    }
+                    if(y == 10 && x == 10){
+                        node.shortestDistance = 0
+                        masterIndex = index
+                    }
+                    if(bot.energy > 200 || bot.time > 700){
+                        if((x < 10 && xto == -1) || (x > 10 && xto == 1)){
+                            cost -= 5+(bot.time/2)
+                        }
+                        if((y < 10 && yto == -1) || (y > 10 && yto == 1)){
+                            cost -= 5+(bot.time/2)
+                        }
+                    }
+                    node.gCost += cost
+                    if(cost == 1000){
+                        node.wall = true
+                    }
+                    
+                    if(y > 0){
+                        node.addNeighbour(nodes(posToIndex2(node.x, node.y-1)))
+                        if(x > 0) {
+                            node.addNeighbour(nodes(posToIndex2(node.x-1, node.y-1)))
+                        }
+                        if(x < 20){
+                            node.addNeighbour(nodes(posToIndex2(node.x+1, node.y-1)))
+                        }
+                    }
+                    if(x > 0) {
+                        node.addNeighbour(nodes(posToIndex2(node.x-1, node.y)))
+                    }
+                    node.index = index
+                    nodes(index) = node
+                    index+=1
+                }
+            }
+            
+            val nextNode = findNextStep(nodes, nodes(masterIndex))
+            val dir = new XY(nextNode.x-10, nextNode.y-10)
+            bot.move(dir)
         }
     }
 
@@ -639,8 +736,8 @@ case class Node(x: Int, y: Int) {
     
     def addNeighbour(node : Node, isCallback : Boolean = false) {
         neighbours += node
-        if(node.gCost > 70){
-            gCost += (node.gCost*0.7).toInt
+        if(node.gCost > 70 && !node.wall){
+            gCost += (node.gCost*0.05).toInt
         }
         if(!isCallback){
             node.addNeighbour(this, true)
